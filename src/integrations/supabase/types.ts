@@ -14,13 +14,211 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          description: string | null
+          entity: string | null
+          entity_id: string | null
+          id: string
+          meta: Json | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          description?: string | null
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          meta?: Json | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          description?: string | null
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          meta?: Json | null
+        }
+        Relationships: []
+      }
+      bank_transactions: {
+        Row: {
+          balance_after_transaction: number
+          bank_id: string
+          created_at: string
+          created_by: string | null
+          credit: number
+          date: string
+          debit: number
+          description: string
+          id: string
+          reference_no: string | null
+          remarks: string | null
+          status: string
+        }
+        Insert: {
+          balance_after_transaction?: number
+          bank_id: string
+          created_at?: string
+          created_by?: string | null
+          credit?: number
+          date?: string
+          debit?: number
+          description: string
+          id?: string
+          reference_no?: string | null
+          remarks?: string | null
+          status?: string
+        }
+        Update: {
+          balance_after_transaction?: number
+          bank_id?: string
+          created_at?: string
+          created_by?: string | null
+          credit?: number
+          date?: string
+          debit?: number
+          description?: string
+          id?: string
+          reference_no?: string | null
+          remarks?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transactions_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      banks: {
+        Row: {
+          account_number: string | null
+          account_title: string | null
+          branch: string | null
+          created_at: string
+          current_balance: number
+          id: string
+          name: string
+          opening_balance: number
+          opening_effective_date: string | null
+          opening_remarks: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_number?: string | null
+          account_title?: string | null
+          branch?: string | null
+          created_at?: string
+          current_balance?: number
+          id?: string
+          name: string
+          opening_balance?: number
+          opening_effective_date?: string | null
+          opening_remarks?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_number?: string | null
+          account_title?: string | null
+          branch?: string | null
+          created_at?: string
+          current_balance?: number
+          id?: string
+          name?: string
+          opening_balance?: number
+          opening_effective_date?: string | null
+          opening_remarks?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      employees: {
+        Row: {
+          address: string | null
+          bank_account_no: string | null
+          bank_id: string | null
+          basic_salary: number
+          bps: number | null
+          cnic: string | null
+          created_at: string
+          department: string | null
+          designation: string | null
+          email: string | null
+          employee_code: string
+          father_name: string | null
+          full_name: string
+          id: string
+          joining_date: string | null
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          bank_account_no?: string | null
+          bank_id?: string | null
+          basic_salary?: number
+          bps?: number | null
+          cnic?: string | null
+          created_at?: string
+          department?: string | null
+          designation?: string | null
+          email?: string | null
+          employee_code: string
+          father_name?: string | null
+          full_name: string
+          id?: string
+          joining_date?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          bank_account_no?: string | null
+          bank_id?: string | null
+          basic_salary?: number
+          bps?: number | null
+          cnic?: string | null
+          created_at?: string
+          department?: string | null
+          designation?: string | null
+          email?: string | null
+          employee_code?: string
+          father_name?: string | null
+          full_name?: string
+          id?: string
+          joining_date?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employees_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      recalc_bank_balance: { Args: { p_bank: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
