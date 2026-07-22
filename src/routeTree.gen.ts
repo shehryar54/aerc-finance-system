@@ -9,18 +9,66 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as ProvidentFundRouteImport } from './routes/provident-fund'
+import { Route as PayrollRouteImport } from './routes/payroll'
+import { Route as LoansRouteImport } from './routes/loans'
+import { Route as IncomeTaxRouteImport } from './routes/income-tax'
 import { Route as EmployeesRouteImport } from './routes/employees'
+import { Route as DeductionsRouteImport } from './routes/deductions'
 import { Route as BanksRouteImport } from './routes/banks'
+import { Route as AllowancesRouteImport } from './routes/allowances'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProvidentFundRoute = ProvidentFundRouteImport.update({
+  id: '/provident-fund',
+  path: '/provident-fund',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PayrollRoute = PayrollRouteImport.update({
+  id: '/payroll',
+  path: '/payroll',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoansRoute = LoansRouteImport.update({
+  id: '/loans',
+  path: '/loans',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IncomeTaxRoute = IncomeTaxRouteImport.update({
+  id: '/income-tax',
+  path: '/income-tax',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmployeesRoute = EmployeesRouteImport.update({
   id: '/employees',
   path: '/employees',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeductionsRoute = DeductionsRouteImport.update({
+  id: '/deductions',
+  path: '/deductions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BanksRoute = BanksRouteImport.update({
   id: '/banks',
   path: '/banks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AllowancesRoute = AllowancesRouteImport.update({
+  id: '/allowances',
+  path: '/allowances',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,36 +79,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/allowances': typeof AllowancesRoute
   '/banks': typeof BanksRoute
+  '/deductions': typeof DeductionsRoute
   '/employees': typeof EmployeesRoute
+  '/income-tax': typeof IncomeTaxRoute
+  '/loans': typeof LoansRoute
+  '/payroll': typeof PayrollRoute
+  '/provident-fund': typeof ProvidentFundRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/allowances': typeof AllowancesRoute
   '/banks': typeof BanksRoute
+  '/deductions': typeof DeductionsRoute
   '/employees': typeof EmployeesRoute
+  '/income-tax': typeof IncomeTaxRoute
+  '/loans': typeof LoansRoute
+  '/payroll': typeof PayrollRoute
+  '/provident-fund': typeof ProvidentFundRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/allowances': typeof AllowancesRoute
   '/banks': typeof BanksRoute
+  '/deductions': typeof DeductionsRoute
   '/employees': typeof EmployeesRoute
+  '/income-tax': typeof IncomeTaxRoute
+  '/loans': typeof LoansRoute
+  '/payroll': typeof PayrollRoute
+  '/provident-fund': typeof ProvidentFundRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/banks' | '/employees'
+  fullPaths:
+    | '/'
+    | '/allowances'
+    | '/banks'
+    | '/deductions'
+    | '/employees'
+    | '/income-tax'
+    | '/loans'
+    | '/payroll'
+    | '/provident-fund'
+    | '/reports'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/banks' | '/employees'
-  id: '__root__' | '/' | '/banks' | '/employees'
+  to:
+    | '/'
+    | '/allowances'
+    | '/banks'
+    | '/deductions'
+    | '/employees'
+    | '/income-tax'
+    | '/loans'
+    | '/payroll'
+    | '/provident-fund'
+    | '/reports'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/allowances'
+    | '/banks'
+    | '/deductions'
+    | '/employees'
+    | '/income-tax'
+    | '/loans'
+    | '/payroll'
+    | '/provident-fund'
+    | '/reports'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AllowancesRoute: typeof AllowancesRoute
   BanksRoute: typeof BanksRoute
+  DeductionsRoute: typeof DeductionsRoute
   EmployeesRoute: typeof EmployeesRoute
+  IncomeTaxRoute: typeof IncomeTaxRoute
+  LoansRoute: typeof LoansRoute
+  PayrollRoute: typeof PayrollRoute
+  ProvidentFundRoute: typeof ProvidentFundRoute
+  ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/provident-fund': {
+      id: '/provident-fund'
+      path: '/provident-fund'
+      fullPath: '/provident-fund'
+      preLoaderRoute: typeof ProvidentFundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payroll': {
+      id: '/payroll'
+      path: '/payroll'
+      fullPath: '/payroll'
+      preLoaderRoute: typeof PayrollRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/loans': {
+      id: '/loans'
+      path: '/loans'
+      fullPath: '/loans'
+      preLoaderRoute: typeof LoansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/income-tax': {
+      id: '/income-tax'
+      path: '/income-tax'
+      fullPath: '/income-tax'
+      preLoaderRoute: typeof IncomeTaxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/employees': {
       id: '/employees'
       path: '/employees'
@@ -68,11 +224,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deductions': {
+      id: '/deductions'
+      path: '/deductions'
+      fullPath: '/deductions'
+      preLoaderRoute: typeof DeductionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/banks': {
       id: '/banks'
       path: '/banks'
       fullPath: '/banks'
       preLoaderRoute: typeof BanksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/allowances': {
+      id: '/allowances'
+      path: '/allowances'
+      fullPath: '/allowances'
+      preLoaderRoute: typeof AllowancesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,8 +257,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AllowancesRoute: AllowancesRoute,
   BanksRoute: BanksRoute,
+  DeductionsRoute: DeductionsRoute,
   EmployeesRoute: EmployeesRoute,
+  IncomeTaxRoute: IncomeTaxRoute,
+  LoansRoute: LoansRoute,
+  PayrollRoute: PayrollRoute,
+  ProvidentFundRoute: ProvidentFundRoute,
+  ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
