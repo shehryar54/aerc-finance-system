@@ -157,7 +157,7 @@ function VouchersPage() {
                     {v.status === "approved" && canPay && (
                       <Button size="sm" onClick={() => doAction(v, "pay")}><Wallet className="h-3.5 w-3.5" /> Mark Paid</Button>
                     )}
-                    {(v.status === "pending_director" || v.status === "pending_vc" || v.status === "approved") && (canDirector || canVC || role === "admin") && (
+                    {(v.status === "pending_director" || v.status === "pending_vc" || v.status === "approved") && (canDirector || canVC) && (
                       <Button size="sm" variant="ghost" onClick={() => setRejectVoucher(v)}><XCircle className="h-3.5 w-3.5 text-destructive" /></Button>
                     )}
                     <Button size="icon" variant="ghost" onClick={() => setPrintVoucher(v)}><Printer className="h-3.5 w-3.5" /></Button>
