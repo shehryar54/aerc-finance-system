@@ -36,8 +36,9 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-primary text-primary-foreground shadow-elegant">
-            <Sparkles className="h-5 w-5" />
+          <div className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-white/95 dark:bg-white/90 px-1.5 shadow-elegant">
+            <img src={aercLogo} alt="AERC" className="h-8 w-8 object-contain" />
+            <img src={uokLogo} alt="University of Karachi" className="h-8 w-8 object-contain" />
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
