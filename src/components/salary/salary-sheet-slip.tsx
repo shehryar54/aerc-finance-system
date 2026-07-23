@@ -8,8 +8,8 @@ import { useOrgSettings } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
 import { MONTHS, type SalarySheetRow } from "@/lib/salary-sheet";
 
-const AERC_LOGO = "https://www.aerc.edu.pk/wp-content/uploads/2018/10/AERC-Favicon.png";
-const UOK_LOGO = "https://www.aerc.edu.pk/wp-content/uploads/2018/10/AERC-Favicon.png";
+import AERC_LOGO from "@/assets/aerc-logo.png";
+import UOK_LOGO from "@/assets/uok-logo.png";
 
 function fmt(n: number | null | undefined) {
   const v = Number(n || 0);
