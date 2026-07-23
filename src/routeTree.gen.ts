@@ -17,6 +17,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ProvidentFundRouteImport } from './routes/provident-fund'
 import { Route as PayrollRouteImport } from './routes/payroll'
 import { Route as LoansRouteImport } from './routes/loans'
+import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as IncomeTaxRouteImport } from './routes/income-tax'
 import { Route as EmployeesRouteImport } from './routes/employees'
 import { Route as DeductionsRouteImport } from './routes/deductions'
@@ -64,6 +65,11 @@ const LoansRoute = LoansRouteImport.update({
   path: '/loans',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LedgerRoute = LedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IncomeTaxRoute = IncomeTaxRouteImport.update({
   id: '/income-tax',
   path: '/income-tax',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/deductions': typeof DeductionsRoute
   '/employees': typeof EmployeesRoute
   '/income-tax': typeof IncomeTaxRoute
+  '/ledger': typeof LedgerRoute
   '/loans': typeof LoansRoute
   '/payroll': typeof PayrollRoute
   '/provident-fund': typeof ProvidentFundRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/deductions': typeof DeductionsRoute
   '/employees': typeof EmployeesRoute
   '/income-tax': typeof IncomeTaxRoute
+  '/ledger': typeof LedgerRoute
   '/loans': typeof LoansRoute
   '/payroll': typeof PayrollRoute
   '/provident-fund': typeof ProvidentFundRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/deductions': typeof DeductionsRoute
   '/employees': typeof EmployeesRoute
   '/income-tax': typeof IncomeTaxRoute
+  '/ledger': typeof LedgerRoute
   '/loans': typeof LoansRoute
   '/payroll': typeof PayrollRoute
   '/provident-fund': typeof ProvidentFundRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/deductions'
     | '/employees'
     | '/income-tax'
+    | '/ledger'
     | '/loans'
     | '/payroll'
     | '/provident-fund'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/deductions'
     | '/employees'
     | '/income-tax'
+    | '/ledger'
     | '/loans'
     | '/payroll'
     | '/provident-fund'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/deductions'
     | '/employees'
     | '/income-tax'
+    | '/ledger'
     | '/loans'
     | '/payroll'
     | '/provident-fund'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   DeductionsRoute: typeof DeductionsRoute
   EmployeesRoute: typeof EmployeesRoute
   IncomeTaxRoute: typeof IncomeTaxRoute
+  LedgerRoute: typeof LedgerRoute
   LoansRoute: typeof LoansRoute
   PayrollRoute: typeof PayrollRoute
   ProvidentFundRoute: typeof ProvidentFundRoute
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoansRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ledger': {
+      id: '/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof LedgerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/income-tax': {
       id: '/income-tax'
       path: '/income-tax'
@@ -322,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   DeductionsRoute: DeductionsRoute,
   EmployeesRoute: EmployeesRoute,
   IncomeTaxRoute: IncomeTaxRoute,
+  LedgerRoute: LedgerRoute,
   LoansRoute: LoansRoute,
   PayrollRoute: PayrollRoute,
   ProvidentFundRoute: ProvidentFundRoute,
