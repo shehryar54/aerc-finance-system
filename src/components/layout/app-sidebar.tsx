@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, Wallet, PlusCircle, MinusCircle, HandCoins,
   PiggyBank, Receipt, Landmark, FileBarChart, Settings, Sparkles,
-  Building2, FileText, Calculator,
+  Building2, FileText,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
