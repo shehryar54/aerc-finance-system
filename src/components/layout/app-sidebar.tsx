@@ -12,8 +12,7 @@ import {
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, group: "Workspace" },
   { title: "Employees", url: "/employees", icon: Users, group: "Workspace" },
-  { title: "Payroll", url: "/payroll", icon: Wallet, group: "Payroll" },
-  { title: "Salary", url: "/salary", icon: Calculator, group: "Payroll" },
+  { title: "Salary & Payroll", url: "/payroll", icon: Wallet, group: "Payroll" },
   { title: "Allowances", url: "/allowances", icon: PlusCircle, group: "Payroll" },
   { title: "Deductions", url: "/deductions", icon: MinusCircle, group: "Payroll" },
   { title: "Loans", url: "/loans", icon: HandCoins, group: "Payroll" },
