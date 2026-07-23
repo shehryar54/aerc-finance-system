@@ -168,6 +168,7 @@ function PayrollPage() {
                   <TableHead className="text-right">Deductions</TableHead>
                   <TableHead className="text-right">Net Pay</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Paid On</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
