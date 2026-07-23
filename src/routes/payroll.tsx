@@ -89,6 +89,12 @@ function PayrollPage() {
     } catch (e) { toast.error((e as Error).message); }
   };
 
+  const doDelete = async (r: SalaryRecord) => {
+    if (!confirm(`Delete salary record for ${empMap.get(r.employee_id)?.full_name ?? "employee"}?`)) return;
+    try { await del.mutateAsync(r.id); toast.success("Deleted"); }
+    catch (e) { toast.error((e as Error).message); }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
