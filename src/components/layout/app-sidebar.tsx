@@ -1,13 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, Wallet, PlusCircle, MinusCircle, HandCoins,
-  PiggyBank, Receipt, Landmark, FileBarChart, Settings, Sparkles,
+  PiggyBank, Receipt, Landmark, FileBarChart, Settings,
   Building2, FileText,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
+import aercLogo from "@/assets/aerc-logo.png";
+import uokLogo from "@/assets/uok-logo.png";
 
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, group: "Workspace" },
