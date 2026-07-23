@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, History } from "lucide-react";
+import { SalaryHistoryDialog } from "@/components/salary/salary-history-dialog";
 import { useBanks, useDeleteEmployee, useEmployees, type Employee } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
