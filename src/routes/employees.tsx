@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, History } from "lucide-react";
+import { SalaryHistoryDialog } from "@/components/salary/salary-history-dialog";
 import { useBanks, useDeleteEmployee, useEmployees, type Employee } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,6 +48,7 @@ function EmployeesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Employee | undefined>();
   const [toDelete, setToDelete] = useState<Employee | undefined>();
+  const [historyFor, setHistoryFor] = useState<Employee | undefined>();
 
   const employees = empQ.data ?? [];
   const departments = useMemo(() => Array.from(new Set(employees.map((e) => e.department).filter(Boolean) as string[])), [employees]);
@@ -170,8 +172,9 @@ function EmployeesPage() {
                     <TableCell className="text-right">{formatMoney(e.basic_salary)}</TableCell>
                     <TableCell><Badge variant={e.status === "active" ? "secondary" : "outline"} className="capitalize">{e.status.replace("_", " ")}</Badge></TableCell>
                     <TableCell className="text-right">
-                      <Button size="icon" variant="ghost" onClick={() => { setEditing(e); setDialogOpen(true); }}><Pencil className="h-3.5 w-3.5" /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => setToDelete(e)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                      <Button size="icon" variant="ghost" title="Salary History" onClick={() => setHistoryFor(e)}><History className="h-3.5 w-3.5" /></Button>
+                      <Button size="icon" variant="ghost" title="Edit" onClick={() => { setEditing(e); setDialogOpen(true); }}><Pencil className="h-3.5 w-3.5" /></Button>
+                      <Button size="icon" variant="ghost" title="Delete" onClick={() => setToDelete(e)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -190,6 +193,7 @@ function EmployeesPage() {
       </Card>
 
       <EmployeeDialog open={dialogOpen} onOpenChange={setDialogOpen} employee={editing} banks={banksQ.data ?? []} />
+      <SalaryHistoryDialog open={!!historyFor} onOpenChange={(o) => !o && setHistoryFor(undefined)} employee={historyFor} />
 
       <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(undefined)}>
         <AlertDialogContent>

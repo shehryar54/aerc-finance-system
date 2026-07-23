@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VouchersRouteImport } from './routes/vouchers'
 import { Route as VendorsRouteImport } from './routes/vendors'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SalaryFormulasRouteImport } from './routes/salary-formulas'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ProvidentFundRouteImport } from './routes/provident-fund'
 import { Route as PayrollRouteImport } from './routes/payroll'
@@ -36,6 +37,11 @@ const VendorsRoute = VendorsRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaryFormulasRoute = SalaryFormulasRouteImport.update({
+  id: '/salary-formulas',
+  path: '/salary-formulas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/payroll': typeof PayrollRoute
   '/provident-fund': typeof ProvidentFundRoute
   '/reports': typeof ReportsRoute
+  '/salary-formulas': typeof SalaryFormulasRoute
   '/settings': typeof SettingsRoute
   '/vendors': typeof VendorsRoute
   '/vouchers': typeof VouchersRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/payroll': typeof PayrollRoute
   '/provident-fund': typeof ProvidentFundRoute
   '/reports': typeof ReportsRoute
+  '/salary-formulas': typeof SalaryFormulasRoute
   '/settings': typeof SettingsRoute
   '/vendors': typeof VendorsRoute
   '/vouchers': typeof VouchersRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/payroll': typeof PayrollRoute
   '/provident-fund': typeof ProvidentFundRoute
   '/reports': typeof ReportsRoute
+  '/salary-formulas': typeof SalaryFormulasRoute
   '/settings': typeof SettingsRoute
   '/vendors': typeof VendorsRoute
   '/vouchers': typeof VouchersRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/payroll'
     | '/provident-fund'
     | '/reports'
+    | '/salary-formulas'
     | '/settings'
     | '/vendors'
     | '/vouchers'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/payroll'
     | '/provident-fund'
     | '/reports'
+    | '/salary-formulas'
     | '/settings'
     | '/vendors'
     | '/vouchers'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/payroll'
     | '/provident-fund'
     | '/reports'
+    | '/salary-formulas'
     | '/settings'
     | '/vendors'
     | '/vouchers'
@@ -194,6 +206,7 @@ export interface RootRouteChildren {
   PayrollRoute: typeof PayrollRoute
   ProvidentFundRoute: typeof ProvidentFundRoute
   ReportsRoute: typeof ReportsRoute
+  SalaryFormulasRoute: typeof SalaryFormulasRoute
   SettingsRoute: typeof SettingsRoute
   VendorsRoute: typeof VendorsRoute
   VouchersRoute: typeof VouchersRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary-formulas': {
+      id: '/salary-formulas'
+      path: '/salary-formulas'
+      fullPath: '/salary-formulas'
+      preLoaderRoute: typeof SalaryFormulasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -306,6 +326,7 @@ const rootRouteChildren: RootRouteChildren = {
   PayrollRoute: PayrollRoute,
   ProvidentFundRoute: ProvidentFundRoute,
   ReportsRoute: ReportsRoute,
+  SalaryFormulasRoute: SalaryFormulasRoute,
   SettingsRoute: SettingsRoute,
   VendorsRoute: VendorsRoute,
   VouchersRoute: VouchersRoute,
