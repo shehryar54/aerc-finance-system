@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VouchersRouteImport } from './routes/vouchers'
+import { Route as VendorsRouteImport } from './routes/vendors'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ProvidentFundRouteImport } from './routes/provident-fund'
@@ -21,6 +23,16 @@ import { Route as BanksRouteImport } from './routes/banks'
 import { Route as AllowancesRouteImport } from './routes/allowances'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VouchersRoute = VouchersRouteImport.update({
+  id: '/vouchers',
+  path: '/vouchers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VendorsRoute = VendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -89,6 +101,8 @@ export interface FileRoutesByFullPath {
   '/provident-fund': typeof ProvidentFundRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/vendors': typeof VendorsRoute
+  '/vouchers': typeof VouchersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +116,8 @@ export interface FileRoutesByTo {
   '/provident-fund': typeof ProvidentFundRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/vendors': typeof VendorsRoute
+  '/vouchers': typeof VouchersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +132,8 @@ export interface FileRoutesById {
   '/provident-fund': typeof ProvidentFundRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/vendors': typeof VendorsRoute
+  '/vouchers': typeof VouchersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +149,8 @@ export interface FileRouteTypes {
     | '/provident-fund'
     | '/reports'
     | '/settings'
+    | '/vendors'
+    | '/vouchers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +164,8 @@ export interface FileRouteTypes {
     | '/provident-fund'
     | '/reports'
     | '/settings'
+    | '/vendors'
+    | '/vouchers'
   id:
     | '__root__'
     | '/'
@@ -157,6 +179,8 @@ export interface FileRouteTypes {
     | '/provident-fund'
     | '/reports'
     | '/settings'
+    | '/vendors'
+    | '/vouchers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,10 +195,26 @@ export interface RootRouteChildren {
   ProvidentFundRoute: typeof ProvidentFundRoute
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
+  VendorsRoute: typeof VendorsRoute
+  VouchersRoute: typeof VouchersRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vouchers': {
+      id: '/vouchers'
+      path: '/vouchers'
+      fullPath: '/vouchers'
+      preLoaderRoute: typeof VouchersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vendors': {
+      id: '/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof VendorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -267,17 +307,9 @@ const rootRouteChildren: RootRouteChildren = {
   ProvidentFundRoute: ProvidentFundRoute,
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
+  VendorsRoute: VendorsRoute,
+  VouchersRoute: VouchersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

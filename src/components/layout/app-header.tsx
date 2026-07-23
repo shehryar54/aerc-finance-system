@@ -1,4 +1,4 @@
-import { Bell, Moon, Sun, Search, Settings, User } from "lucide-react";
+import { Bell, Moon, Sun, Search, Settings, User, ShieldCheck } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +8,13 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { financialYear } from "@/lib/format";
+import { useRole, ROLE_LABELS, type Role } from "@/lib/role";
 
 export function AppHeader() {
   const { theme, setTheme } = useTheme();
+  const { role, setRole } = useRole();
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/70 px-3 backdrop-blur-md">
       <SidebarTrigger />
@@ -22,6 +25,17 @@ export function AppHeader() {
         </div>
       </div>
       <div className="ml-auto flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-1.5 rounded-full border px-2 py-1 text-xs bg-muted/40">
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+          <Select value={role} onValueChange={(v) => setRole(v as Role)}>
+            <SelectTrigger className="h-6 border-0 bg-transparent px-1 py-0 text-xs focus:ring-0 shadow-none">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="end">
+              {(Object.keys(ROLE_LABELS) as Role[]).map((r) => <SelectItem key={r} value={r}>{ROLE_LABELS[r]}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="hidden sm:flex items-center rounded-full border px-2.5 py-1 text-xs text-muted-foreground bg-muted/40">
           FY {financialYear()}
         </div>

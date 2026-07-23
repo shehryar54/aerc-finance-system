@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, Wallet, PlusCircle, MinusCircle, HandCoins,
   PiggyBank, Receipt, Landmark, FileBarChart, Settings, Sparkles,
+  Building2, FileText,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -9,17 +10,19 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Employees", url: "/employees", icon: Users },
-  { title: "Payroll", url: "/payroll", icon: Wallet },
-  { title: "Allowances", url: "/allowances", icon: PlusCircle },
-  { title: "Deductions", url: "/deductions", icon: MinusCircle },
-  { title: "Loans", url: "/loans", icon: HandCoins },
-  { title: "Provident Fund", url: "/provident-fund", icon: PiggyBank },
-  { title: "Income Tax", url: "/income-tax", icon: Receipt },
-  { title: "Banks", url: "/banks", icon: Landmark },
-  { title: "Reports", url: "/reports", icon: FileBarChart },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Dashboard", url: "/", icon: LayoutDashboard, group: "Workspace" },
+  { title: "Employees", url: "/employees", icon: Users, group: "Workspace" },
+  { title: "Payroll", url: "/payroll", icon: Wallet, group: "Payroll" },
+  { title: "Allowances", url: "/allowances", icon: PlusCircle, group: "Payroll" },
+  { title: "Deductions", url: "/deductions", icon: MinusCircle, group: "Payroll" },
+  { title: "Loans", url: "/loans", icon: HandCoins, group: "Payroll" },
+  { title: "Provident Fund", url: "/provident-fund", icon: PiggyBank, group: "Payroll" },
+  { title: "Income Tax", url: "/income-tax", icon: Receipt, group: "Payroll" },
+  { title: "Vendors", url: "/vendors", icon: Building2, group: "Accounts" },
+  { title: "Vouchers", url: "/vouchers", icon: FileText, group: "Accounts" },
+  { title: "Banks", url: "/banks", icon: Landmark, group: "Accounts" },
+  { title: "Reports", url: "/reports", icon: FileBarChart, group: "System" },
+  { title: "Settings", url: "/settings", icon: Settings, group: "System" },
 ];
 
 export function AppSidebar() {
@@ -43,26 +46,28 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => {
-                const active = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url);
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
-                      <Link to={item.url} className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {["Workspace", "Payroll", "Accounts", "System"].map((group) => (
+          <SidebarGroup key={group}>
+            <SidebarGroupLabel>{group}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.filter((i) => i.group === group).map((item) => {
+                  const active = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url);
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
+                        <Link to={item.url} className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4" />
+                          {!collapsed && <span>{item.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">
         {!collapsed && (

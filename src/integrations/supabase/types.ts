@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_heads: {
+        Row: {
+          bank_id: string | null
+          code: string | null
+          created_at: string
+          id: string
+          name: string
+          status: string
+          type: Database["public"]["Enums"]["account_head_type"]
+          updated_at: string
+        }
+        Insert: {
+          bank_id?: string | null
+          code?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          status?: string
+          type: Database["public"]["Enums"]["account_head_type"]
+          updated_at?: string
+        }
+        Update: {
+          bank_id?: string | null
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          status?: string
+          type?: Database["public"]["Enums"]["account_head_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_heads_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       activity_log: {
         Row: {
           action: string
@@ -371,6 +412,125 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_vouchers: {
+        Row: {
+          amount: number
+          bank_tx_id: string | null
+          created_at: string
+          created_by: string | null
+          credit_head_id: string
+          debit_head_id: string
+          description: string | null
+          director_approved_at: string | null
+          director_approved_by: string | null
+          id: string
+          paid_at: string | null
+          paid_by: string | null
+          payment_method: string
+          purpose: string
+          reference_no: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
+          remarks: string | null
+          requires_vc: boolean
+          status: Database["public"]["Enums"]["voucher_status"]
+          updated_at: string
+          vc_approved_at: string | null
+          vc_approved_by: string | null
+          vendor_id: string | null
+          voucher_date: string
+          voucher_no: string
+        }
+        Insert: {
+          amount: number
+          bank_tx_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          credit_head_id: string
+          debit_head_id: string
+          description?: string | null
+          director_approved_at?: string | null
+          director_approved_by?: string | null
+          id?: string
+          paid_at?: string | null
+          paid_by?: string | null
+          payment_method?: string
+          purpose: string
+          reference_no?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          remarks?: string | null
+          requires_vc?: boolean
+          status?: Database["public"]["Enums"]["voucher_status"]
+          updated_at?: string
+          vc_approved_at?: string | null
+          vc_approved_by?: string | null
+          vendor_id?: string | null
+          voucher_date?: string
+          voucher_no: string
+        }
+        Update: {
+          amount?: number
+          bank_tx_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          credit_head_id?: string
+          debit_head_id?: string
+          description?: string | null
+          director_approved_at?: string | null
+          director_approved_by?: string | null
+          id?: string
+          paid_at?: string | null
+          paid_by?: string | null
+          payment_method?: string
+          purpose?: string
+          reference_no?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          remarks?: string | null
+          requires_vc?: boolean
+          status?: Database["public"]["Enums"]["voucher_status"]
+          updated_at?: string
+          vc_approved_at?: string | null
+          vc_approved_by?: string | null
+          vendor_id?: string | null
+          voucher_date?: string
+          voucher_no?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_vouchers_bank_tx_id_fkey"
+            columns: ["bank_tx_id"]
+            isOneToOne: false
+            referencedRelation: "bank_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_vouchers_credit_head_id_fkey"
+            columns: ["credit_head_id"]
+            isOneToOne: false
+            referencedRelation: "account_heads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_vouchers_debit_head_id_fkey"
+            columns: ["debit_head_id"]
+            isOneToOne: false
+            referencedRelation: "account_heads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_vouchers_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payroll_runs: {
         Row: {
           created_at: string
@@ -487,6 +647,89 @@ export type Database = {
         }
         Relationships: []
       }
+      vendors: {
+        Row: {
+          account_title: string | null
+          address: string | null
+          bank_account_no: string | null
+          bank_name: string | null
+          contact_number: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          ntn: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_title?: string | null
+          address?: string | null
+          bank_account_no?: string | null
+          bank_name?: string | null
+          contact_number?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          ntn?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_title?: string | null
+          address?: string | null
+          bank_account_no?: string | null
+          bank_name?: string | null
+          contact_number?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          ntn?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      voucher_approvals: {
+        Row: {
+          action: string
+          actor_name: string | null
+          actor_role: Database["public"]["Enums"]["approval_role"]
+          created_at: string
+          id: string
+          remarks: string | null
+          voucher_id: string
+        }
+        Insert: {
+          action: string
+          actor_name?: string | null
+          actor_role: Database["public"]["Enums"]["approval_role"]
+          created_at?: string
+          id?: string
+          remarks?: string | null
+          voucher_id: string
+        }
+        Update: {
+          action?: string
+          actor_name?: string | null
+          actor_role?: Database["public"]["Enums"]["approval_role"]
+          created_at?: string
+          id?: string
+          remarks?: string | null
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voucher_approvals_voucher_id_fkey"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "payment_vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -495,7 +738,25 @@ export type Database = {
       recalc_bank_balance: { Args: { p_bank: string }; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      account_head_type:
+        | "expense"
+        | "asset"
+        | "liability"
+        | "income"
+        | "equity"
+        | "bank"
+      approval_role:
+        | "payroll_officer"
+        | "director"
+        | "vice_chancellor"
+        | "admin"
+      voucher_status:
+        | "draft"
+        | "pending_director"
+        | "pending_vc"
+        | "approved"
+        | "paid"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -622,6 +883,29 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      account_head_type: [
+        "expense",
+        "asset",
+        "liability",
+        "income",
+        "equity",
+        "bank",
+      ],
+      approval_role: [
+        "payroll_officer",
+        "director",
+        "vice_chancellor",
+        "admin",
+      ],
+      voucher_status: [
+        "draft",
+        "pending_director",
+        "pending_vc",
+        "approved",
+        "paid",
+        "rejected",
+      ],
+    },
   },
 } as const
