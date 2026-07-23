@@ -44,6 +44,42 @@ export type Database = {
         }
         Relationships: []
       }
+      allowance_types: {
+        Row: {
+          amount: number
+          amount_type: string
+          code: string | null
+          created_at: string
+          id: string
+          name: string
+          status: string
+          taxable: boolean
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          amount_type?: string
+          code?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          status?: string
+          taxable?: boolean
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          amount_type?: string
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          status?: string
+          taxable?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bank_transactions: {
         Row: {
           balance_after_transaction: number
@@ -142,6 +178,39 @@ export type Database = {
         }
         Relationships: []
       }
+      deduction_types: {
+        Row: {
+          amount: number
+          amount_type: string
+          code: string | null
+          created_at: string
+          id: string
+          name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          amount_type?: string
+          code?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          amount_type?: string
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       employees: {
         Row: {
           address: string | null
@@ -212,6 +281,211 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      loans: {
+        Row: {
+          created_at: string
+          employee_id: string
+          end_date: string | null
+          id: string
+          loan_type: string
+          monthly_installment: number
+          principal: number
+          remaining_balance: number
+          remarks: string | null
+          start_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          end_date?: string | null
+          id?: string
+          loan_type?: string
+          monthly_installment?: number
+          principal?: number
+          remaining_balance?: number
+          remarks?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          end_date?: string | null
+          id?: string
+          loan_type?: string
+          monthly_installment?: number
+          principal?: number
+          remaining_balance?: number
+          remarks?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loans_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_settings: {
+        Row: {
+          address: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          currency: string
+          fiscal_year_start: string
+          id: string
+          logo_url: string | null
+          organisation_name: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          currency?: string
+          fiscal_year_start?: string
+          id?: string
+          logo_url?: string | null
+          organisation_name?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          currency?: string
+          fiscal_year_start?: string
+          id?: string
+          logo_url?: string | null
+          organisation_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payroll_runs: {
+        Row: {
+          created_at: string
+          employees_count: number
+          id: string
+          period: string
+          remarks: string | null
+          status: string
+          total_allowances: number
+          total_deductions: number
+          total_gross: number
+          total_net: number
+          total_tax: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          employees_count?: number
+          id?: string
+          period: string
+          remarks?: string | null
+          status?: string
+          total_allowances?: number
+          total_deductions?: number
+          total_gross?: number
+          total_net?: number
+          total_tax?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          employees_count?: number
+          id?: string
+          period?: string
+          remarks?: string | null
+          status?: string
+          total_allowances?: number
+          total_deductions?: number
+          total_gross?: number
+          total_net?: number
+          total_tax?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pf_contributions: {
+        Row: {
+          created_at: string
+          employee_id: string
+          employee_share: number
+          employer_share: number
+          id: string
+          period: string
+          remarks: string | null
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          employee_share?: number
+          employer_share?: number
+          id?: string
+          period: string
+          remarks?: string | null
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          employee_share?: number
+          employer_share?: number
+          id?: string
+          period?: string
+          remarks?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pf_contributions_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tax_slabs: {
+        Row: {
+          base_tax: number
+          created_at: string
+          fiscal_year: string
+          id: string
+          max_income: number | null
+          min_income: number
+          rate_percent: number
+          sort_order: number
+        }
+        Insert: {
+          base_tax?: number
+          created_at?: string
+          fiscal_year: string
+          id?: string
+          max_income?: number | null
+          min_income: number
+          rate_percent?: number
+          sort_order?: number
+        }
+        Update: {
+          base_tax?: number
+          created_at?: string
+          fiscal_year?: string
+          id?: string
+          max_income?: number | null
+          min_income?: number
+          rate_percent?: number
+          sort_order?: number
+        }
+        Relationships: []
       }
     }
     Views: {
