@@ -323,6 +323,59 @@ export type Database = {
           },
         ]
       }
+      ledger_entries: {
+        Row: {
+          account_head_id: string
+          created_at: string
+          credit: number
+          debit: number
+          entry_date: string
+          folio: string | null
+          id: string
+          particulars: string
+          remarks: string | null
+          source_id: string | null
+          source_type: string
+          voucher_no: string | null
+        }
+        Insert: {
+          account_head_id: string
+          created_at?: string
+          credit?: number
+          debit?: number
+          entry_date?: string
+          folio?: string | null
+          id?: string
+          particulars: string
+          remarks?: string | null
+          source_id?: string | null
+          source_type?: string
+          voucher_no?: string | null
+        }
+        Update: {
+          account_head_id?: string
+          created_at?: string
+          credit?: number
+          debit?: number
+          entry_date?: string
+          folio?: string | null
+          id?: string
+          particulars?: string
+          remarks?: string | null
+          source_id?: string | null
+          source_type?: string
+          voucher_no?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ledger_entries_account_head_id_fkey"
+            columns: ["account_head_id"]
+            isOneToOne: false
+            referencedRelation: "account_heads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loans: {
         Row: {
           created_at: string
