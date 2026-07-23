@@ -245,7 +245,7 @@ export function SalarySheetSlipDialog({ open, onOpenChange, row, employee }: Pro
                   {/* Banker row spans full width */}
                   <tr className="shade">
                     <td colSpan={2} className="bold">
-                      BANKER: {(employee.bank_name ?? "NATIONAL BANK OF PAKISTAN, UNIVERSITY CAMPUS BRANCH, KARACHI").toUpperCase()}.
+                      BANKER: {((employee as any).bank_name ?? "NATIONAL BANK OF PAKISTAN, UNIVERSITY CAMPUS BRANCH, KARACHI").toUpperCase()}.
                     </td>
                     <td className="bold">A/c # {employee.bank_account_no ?? "—"}</td>
                     <td className="num bold">{fmt(totals.net)}</td>
