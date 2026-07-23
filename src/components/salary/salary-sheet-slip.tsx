@@ -134,7 +134,7 @@ export function SalarySheetSlipDialog({ open, onOpenChange, row, employee }: Pro
                     <td colSpan={2}><b>Name:</b> {employee.full_name}</td>
                     <td colSpan={2}>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <span><b>D.O.B</b> {employee.date_of_birth ? formatDate((employee as any).date_of_birth) : "—"}</span>
+                        <span><b>D.O.B</b> {(employee as any).date_of_birth ? formatDate((employee as any).date_of_birth) : "—"}</span>
                         <span><b>Financial Year:</b> {finYear}</span>
                       </div>
                     </td>
