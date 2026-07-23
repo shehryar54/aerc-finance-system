@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, Wallet, PlusCircle, MinusCircle, HandCoins,
   PiggyBank, Receipt, Landmark, FileBarChart, Settings, Sparkles,
-  Building2, FileText, Calculator,
+  Building2, FileText,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -12,8 +12,7 @@ import {
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, group: "Workspace" },
   { title: "Employees", url: "/employees", icon: Users, group: "Workspace" },
-  { title: "Payroll", url: "/payroll", icon: Wallet, group: "Payroll" },
-  { title: "Salary", url: "/salary", icon: Calculator, group: "Payroll" },
+  { title: "Salary & Payroll", url: "/payroll", icon: Wallet, group: "Payroll" },
   { title: "Allowances", url: "/allowances", icon: PlusCircle, group: "Payroll" },
   { title: "Deductions", url: "/deductions", icon: MinusCircle, group: "Payroll" },
   { title: "Loans", url: "/loans", icon: HandCoins, group: "Payroll" },
