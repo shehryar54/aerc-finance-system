@@ -3,6 +3,8 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { AppHeader } from "./app-header";
 import { financialYear } from "@/lib/format";
+import aercLogo from "@/assets/aerc-logo.png";
+import uokLogo from "@/assets/uok-logo.png";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
