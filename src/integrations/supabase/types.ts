@@ -728,6 +728,155 @@ export type Database = {
           },
         ]
       }
+      salary_sheet: {
+        Row: {
+          adhoc_2022: number
+          adhoc_2023: number
+          adhoc_2024: number
+          adhoc_2025: number
+          basic_pay: number
+          computer: number
+          conveyance: number
+          created_at: string
+          differential: number
+          earn: number
+          employee_id: string
+          entertainment: number
+          gross_pay: number | null
+          house_rent: number
+          housing_car_loan: number
+          id: string
+          incentive_child: number
+          income_tax: number
+          integrated: number
+          kuts_benevolent: number
+          kuts_kuowa: number
+          medical: number
+          nafa: number
+          net_pay: number | null
+          night_duty: number
+          orderly: number
+          other_adjustment: number
+          overtime: number
+          paid_at: string | null
+          period_month: number
+          period_year: number
+          pf_loan: number
+          provident_fund: number
+          qualification: number
+          remarks: string | null
+          salary_advance: number
+          salary_switch: number
+          senior_post: number
+          special_deduction: number
+          status: string
+          telephone: number
+          total_deductions: number | null
+          updated_at: string
+          without_flag: number
+        }
+        Insert: {
+          adhoc_2022?: number
+          adhoc_2023?: number
+          adhoc_2024?: number
+          adhoc_2025?: number
+          basic_pay?: number
+          computer?: number
+          conveyance?: number
+          created_at?: string
+          differential?: number
+          earn?: number
+          employee_id: string
+          entertainment?: number
+          gross_pay?: number | null
+          house_rent?: number
+          housing_car_loan?: number
+          id?: string
+          incentive_child?: number
+          income_tax?: number
+          integrated?: number
+          kuts_benevolent?: number
+          kuts_kuowa?: number
+          medical?: number
+          nafa?: number
+          net_pay?: number | null
+          night_duty?: number
+          orderly?: number
+          other_adjustment?: number
+          overtime?: number
+          paid_at?: string | null
+          period_month: number
+          period_year: number
+          pf_loan?: number
+          provident_fund?: number
+          qualification?: number
+          remarks?: string | null
+          salary_advance?: number
+          salary_switch?: number
+          senior_post?: number
+          special_deduction?: number
+          status?: string
+          telephone?: number
+          total_deductions?: number | null
+          updated_at?: string
+          without_flag?: number
+        }
+        Update: {
+          adhoc_2022?: number
+          adhoc_2023?: number
+          adhoc_2024?: number
+          adhoc_2025?: number
+          basic_pay?: number
+          computer?: number
+          conveyance?: number
+          created_at?: string
+          differential?: number
+          earn?: number
+          employee_id?: string
+          entertainment?: number
+          gross_pay?: number | null
+          house_rent?: number
+          housing_car_loan?: number
+          id?: string
+          incentive_child?: number
+          income_tax?: number
+          integrated?: number
+          kuts_benevolent?: number
+          kuts_kuowa?: number
+          medical?: number
+          nafa?: number
+          net_pay?: number | null
+          night_duty?: number
+          orderly?: number
+          other_adjustment?: number
+          overtime?: number
+          paid_at?: string | null
+          period_month?: number
+          period_year?: number
+          pf_loan?: number
+          provident_fund?: number
+          qualification?: number
+          remarks?: string | null
+          salary_advance?: number
+          salary_switch?: number
+          senior_post?: number
+          special_deduction?: number
+          status?: string
+          telephone?: number
+          total_deductions?: number | null
+          updated_at?: string
+          without_flag?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salary_sheet_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tax_slabs: {
         Row: {
           base_tax: number
