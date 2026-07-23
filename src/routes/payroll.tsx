@@ -12,10 +12,10 @@ import { toast } from "sonner";
 import { useEmployees } from "@/lib/queries";
 import {
   MONTHS, monthLabel,
-  useGenerateMonthlySalaries, useSalaryRecords, useUpsertSalaryRecord,
+  useGenerateMonthlySalaries, useSalaryRecords, useUpsertSalaryRecord, useDeleteSalaryRecord,
   type SalaryRecord,
 } from "@/lib/salary";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, formatDate } from "@/lib/format";
 import { SalaryEditDialog } from "@/components/salary/salary-edit-dialog";
 import { SalarySlipDialog } from "@/components/salary/salary-slip-dialog";
 
