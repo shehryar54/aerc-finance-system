@@ -153,7 +153,7 @@ export function useVoucher(id?: string) {
     queryKey: ["voucher", id],
     enabled: !!id,
     queryFn: async () => {
-      const { data, error } = await supabase.from("payment_vouchers" as never).select("*").eq("id", id).maybeSingle();
+      const { data, error } = await supabase.from("payment_vouchers" as never).select("*").eq("id", id as string).maybeSingle();
       if (error) throw error;
       return data as unknown as PaymentVoucher | null;
     },
@@ -168,7 +168,7 @@ export function useVoucherApprovals(voucherId?: string) {
       const { data, error } = await supabase
         .from("voucher_approvals" as never)
         .select("*")
-        .eq("voucher_id", voucherId)
+        .eq("voucher_id", voucherId as string)
         .order("created_at");
       if (error) throw error;
       return (data ?? []) as unknown as VoucherApproval[];
