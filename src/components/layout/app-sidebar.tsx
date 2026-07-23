@@ -1,13 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, Wallet, PlusCircle, MinusCircle, HandCoins,
-  PiggyBank, Receipt, Landmark, FileBarChart, Settings, Sparkles,
+  PiggyBank, Receipt, Landmark, FileBarChart, Settings,
   Building2, FileText,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
+import aercLogo from "@/assets/aerc-logo.png";
+import uokLogo from "@/assets/uok-logo.png";
 
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, group: "Workspace" },
@@ -34,8 +36,9 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-primary text-primary-foreground shadow-elegant">
-            <Sparkles className="h-5 w-5" />
+          <div className="flex h-10 items-center justify-center gap-1.5 rounded-lg bg-white/95 dark:bg-white/90 px-1.5 shadow-elegant">
+            <img src={aercLogo} alt="AERC" className="h-8 w-8 object-contain" />
+            <img src={uokLogo} alt="University of Karachi" className="h-8 w-8 object-contain" />
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">

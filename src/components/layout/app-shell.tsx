@@ -3,6 +3,8 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { AppHeader } from "./app-header";
 import { financialYear } from "@/lib/format";
+import aercLogo from "@/assets/aerc-logo.png";
+import uokLogo from "@/assets/uok-logo.png";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -15,6 +17,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           <footer className="border-t bg-muted/20 px-4 md:px-6 py-6 text-xs text-muted-foreground">
             <div className="grid gap-6 md:grid-cols-3">
               <div>
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 rounded-md bg-white/95 px-2 py-1 shadow-sm">
+                    <img src={aercLogo} alt="AERC" className="h-8 w-8 object-contain" />
+                    <img src={uokLogo} alt="University of Karachi" className="h-8 w-8 object-contain" />
+                  </div>
+                </div>
                 <h3 className="mb-2 text-sm font-semibold text-foreground">About AERC</h3>
                 <p className="leading-relaxed">
                   The Applied Economics Research Centre (AERC), University of Karachi, was
