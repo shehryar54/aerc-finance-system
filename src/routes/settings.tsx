@@ -69,7 +69,7 @@ function SettingsPage() {
       <Card className="glass-card"><CardContent className="p-4 space-y-3">
         <h3 className="font-semibold">Appearance</h3>
         <div className="flex gap-2">
-          {(["light", "dark", "system"] as const).map((t) => (
+          {(["light", "dark"] as const).map((t) => (
             <Button key={t} variant={theme === t ? "default" : "outline"} onClick={() => setTheme(t)} className="capitalize">{t}</Button>
           ))}
         </div>
