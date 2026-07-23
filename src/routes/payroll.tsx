@@ -46,6 +46,7 @@ function PayrollPage() {
   const recQ = useSalaryRecords({ year, month });
   const generate = useGenerateMonthlySalaries();
   const upsert = useUpsertSalaryRecord();
+  const del = useDeleteSalaryRecord();
 
   const empMap = useMemo(() => new Map((empQ.data ?? []).map((e) => [e.id, e])), [empQ.data]);
 
