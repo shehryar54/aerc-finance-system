@@ -175,10 +175,10 @@ function PayrollPage() {
               <TableBody>
                 {recQ.isLoading ? (
                   Array.from({ length: 6 }).map((_, i) => (
-                    <TableRow key={i}>{Array.from({ length: 9 }).map((__, j) => <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>)}</TableRow>
+                    <TableRow key={i}>{Array.from({ length: 10 }).map((__, j) => <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>)}</TableRow>
                   ))
                 ) : rows.length === 0 ? (
-                  <TableRow><TableCell colSpan={9} className="h-32 text-center text-muted-foreground">
+                  <TableRow><TableCell colSpan={10} className="h-32 text-center text-muted-foreground">
                     No salary records for {monthLabel(year, month)}. Click <b>Generate</b> to create drafts from active employees.
                   </TableCell></TableRow>
                 ) : rows.map((r) => {
@@ -193,13 +193,15 @@ function PayrollPage() {
                       <TableCell className="text-right">{formatMoney(r.total_deductions)}</TableCell>
                       <TableCell className="text-right font-semibold">{formatMoney(r.net_pay)}</TableCell>
                       <TableCell><Badge variant={r.status === "paid" ? "secondary" : "outline"} className="capitalize">{r.status}</Badge></TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{r.paid_at ? formatDate(r.paid_at) : "—"}</TableCell>
                       <TableCell className="text-right whitespace-nowrap">
                         <Button size="icon" variant="ghost" title="Edit" onClick={() => setEditing(r)}><Edit className="h-3.5 w-3.5" /></Button>
                         <Button size="icon" variant="ghost" title="Preview slip" onClick={() => setPreviewing(r)}><FileText className="h-3.5 w-3.5" /></Button>
-                        <Button size="icon" variant="ghost" title="Print" onClick={() => setPreviewing(r)}><Printer className="h-3.5 w-3.5" /></Button>
+                        <Button size="icon" variant="ghost" title="Print / PDF" onClick={() => setPreviewing(r)}><Printer className="h-3.5 w-3.5" /></Button>
                         {r.status !== "paid" && (
                           <Button size="icon" variant="ghost" title="Mark paid" onClick={() => markPaid(r)}><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /></Button>
                         )}
+                        <Button size="icon" variant="ghost" title="Delete" onClick={() => doDelete(r)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
                       </TableCell>
                     </TableRow>
                   );
