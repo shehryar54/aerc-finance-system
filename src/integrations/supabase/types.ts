@@ -614,6 +614,120 @@ export type Database = {
           },
         ]
       }
+      salary_formulas: {
+        Row: {
+          description: string | null
+          expression: string
+          id: string
+          key: string
+          label: string
+          updated_at: string
+        }
+        Insert: {
+          description?: string | null
+          expression: string
+          id?: string
+          key: string
+          label: string
+          updated_at?: string
+        }
+        Update: {
+          description?: string | null
+          expression?: string
+          id?: string
+          key?: string
+          label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      salary_records: {
+        Row: {
+          allowances: Json
+          bank_account_no: string | null
+          bank_id: string | null
+          basic_pay: number
+          created_at: string
+          deductions: Json
+          employee_id: string
+          gross_pay: number
+          id: string
+          leave_deduction: number
+          leaves: Json
+          manual_deductions: Json
+          net_pay: number
+          paid_at: string | null
+          period_month: number
+          period_year: number
+          remarks: string | null
+          status: string
+          total_deductions: number
+          updated_at: string
+          working_days: number
+        }
+        Insert: {
+          allowances?: Json
+          bank_account_no?: string | null
+          bank_id?: string | null
+          basic_pay?: number
+          created_at?: string
+          deductions?: Json
+          employee_id: string
+          gross_pay?: number
+          id?: string
+          leave_deduction?: number
+          leaves?: Json
+          manual_deductions?: Json
+          net_pay?: number
+          paid_at?: string | null
+          period_month: number
+          period_year: number
+          remarks?: string | null
+          status?: string
+          total_deductions?: number
+          updated_at?: string
+          working_days?: number
+        }
+        Update: {
+          allowances?: Json
+          bank_account_no?: string | null
+          bank_id?: string | null
+          basic_pay?: number
+          created_at?: string
+          deductions?: Json
+          employee_id?: string
+          gross_pay?: number
+          id?: string
+          leave_deduction?: number
+          leaves?: Json
+          manual_deductions?: Json
+          net_pay?: number
+          paid_at?: string | null
+          period_month?: number
+          period_year?: number
+          remarks?: string | null
+          status?: string
+          total_deductions?: number
+          updated_at?: string
+          working_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salary_records_bank_id_fkey"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "banks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salary_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tax_slabs: {
         Row: {
           base_tax: number
