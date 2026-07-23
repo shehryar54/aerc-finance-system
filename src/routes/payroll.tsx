@@ -21,9 +21,9 @@ import { SalarySheetSlipDialog } from "@/components/salary/salary-sheet-slip";
 export const Route = createFileRoute("/payroll")({
   head: () => ({
     meta: [
-      { title: "Payroll Sheet — Finance Hub" },
+      { title: "Salary & Payroll — Finance Hub" },
       { name: "description", content: "Live salary spreadsheet: edit any cell to instantly recalculate gross, deductions, and net pay." },
-      { property: "og:title", content: "Payroll Sheet — Finance Hub" },
+      { property: "og:title", content: "Salary & Payroll — Finance Hub" },
       { property: "og:description", content: "Live monthly salary spreadsheet." },
     ],
   }),
