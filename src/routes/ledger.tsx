@@ -87,6 +87,24 @@ function LedgerPage() {
   const cashHeads = heads.filter((h) => h.type === "bank");
   const bankBookHead = tab === "bank" ? (currentHead ?? cashHeads[0]) : null;
 
+  const handlePrint = () => {
+    if (tab === "cash" || tab === "bank") {
+      const head = bankBookHead ?? currentHead ?? cashHeads[0];
+      if (!head) { window.print(); return; }
+      const bankRows = rows.filter((r) => r.account_head_id === head.id);
+      const monthLabel = from
+        ? new Date(from).toLocaleString("en-US", { month: "long", year: "numeric" })
+        : new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+      printCashBook({ account: head, rows: bankRows, monthLabel });
+      return;
+    }
+    if (tab === "general" && currentHead) {
+      printLedgerSheet({ account: currentHead, rows, from, to });
+      return;
+    }
+    window.print();
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
