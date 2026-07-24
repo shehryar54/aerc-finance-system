@@ -17,6 +17,7 @@ import {
   useLedgerEntries, useCreateLedgerEntry, useDeleteLedgerEntry,
   withRunningBalance, SOURCE_LABELS, type LedgerEntry,
 } from "@/lib/ledger";
+import { printLedgerSheet, printCashBook } from "@/lib/print-ledger";
 
 export const Route = createFileRoute("/ledger")({
   head: () => ({ meta: [
