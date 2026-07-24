@@ -17,6 +17,7 @@ import {
   useLedgerEntries, useCreateLedgerEntry, useDeleteLedgerEntry,
   withRunningBalance, SOURCE_LABELS, type LedgerEntry,
 } from "@/lib/ledger";
+import { printLedgerSheet, printCashBook } from "@/lib/print-ledger";
 
 export const Route = createFileRoute("/ledger")({
   head: () => ({ meta: [
@@ -86,6 +87,24 @@ function LedgerPage() {
   const cashHeads = heads.filter((h) => h.type === "bank");
   const bankBookHead = tab === "bank" ? (currentHead ?? cashHeads[0]) : null;
 
+  const handlePrint = () => {
+    if (tab === "cash" || tab === "bank") {
+      const head = bankBookHead ?? currentHead ?? cashHeads[0];
+      if (!head) { window.print(); return; }
+      const bankRows = rows.filter((r) => r.account_head_id === head.id);
+      const monthLabel = from
+        ? new Date(from).toLocaleString("en-US", { month: "long", year: "numeric" })
+        : new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+      printCashBook({ account: head, rows: bankRows, monthLabel });
+      return;
+    }
+    if (tab === "general" && currentHead) {
+      printLedgerSheet({ account: currentHead, rows, from, to });
+      return;
+    }
+    window.print();
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
@@ -94,7 +113,7 @@ function LedgerPage() {
           <p className="text-sm text-muted-foreground mt-1">Central double-entry ledger — every voucher, bank movement, and salary posts here automatically.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.print()}><Printer className="h-4 w-4" /> Print</Button>
+          <Button variant="outline" onClick={handlePrint}><Printer className="h-4 w-4" /> Print</Button>
           <Button variant="outline" onClick={exportCSV}><Download className="h-4 w-4" /> CSV</Button>
           <Button onClick={() => setCreateOpen(true)}><Plus className="h-4 w-4" /> Journal Entry</Button>
         </div>
