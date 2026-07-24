@@ -95,7 +95,7 @@ function LedgerPage() {
           <p className="text-sm text-muted-foreground mt-1">Central double-entry ledger — every voucher, bank movement, and salary posts here automatically.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.print()}><Printer className="h-4 w-4" /> Print</Button>
+          <Button variant="outline" onClick={handlePrint}><Printer className="h-4 w-4" /> Print</Button>
           <Button variant="outline" onClick={exportCSV}><Download className="h-4 w-4" /> CSV</Button>
           <Button onClick={() => setCreateOpen(true)}><Plus className="h-4 w-4" /> Journal Entry</Button>
         </div>
