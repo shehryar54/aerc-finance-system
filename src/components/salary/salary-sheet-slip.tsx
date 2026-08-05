@@ -87,7 +87,7 @@ export function SalarySheetSlipDialog({ open, onOpenChange, row, employee }: Pro
         .row-lbl{font-style:italic}
         .num{text-align:right;font-variant-numeric:tabular-nums}
         .shade{background:#f2f2f2}
-        img.logo{height:40px;width:40px;object-fit:contain}
+        img.logo{height:22px;width:22px;object-fit:contain}
         @media print{body{padding:6px}.no-print{display:none}}
       </style></head><body>${html}</body></html>`);
     w.document.close();
@@ -116,12 +116,12 @@ export function SalarySheetSlipDialog({ open, onOpenChange, row, employee }: Pro
                   <tr>
                     <td colSpan={2} className="center bold">
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                        <img className="logo" src={AERC_LOGO} alt="AERC" />
+                        <img className="logo" src={AERC_LOGO} alt="AERC" style={{ height: 22, width: 22, objectFit: "contain" }} />
                         <div>
                           <div style={{ fontSize: 13 }}>{(org?.organisation_name ?? "APPLIED ECONOMICS RESEARCH CENTRE").toUpperCase()}</div>
                           <div>UNIVERSITY OF KARACHI</div>
                         </div>
-                        <img className="logo" src={UOK_LOGO} alt="UoK" />
+                        <img className="logo" src={UOK_LOGO} alt="UoK" style={{ height: 22, width: 22, objectFit: "contain" }} />
                       </div>
                     </td>
                     <td colSpan={2} className="center bold">
