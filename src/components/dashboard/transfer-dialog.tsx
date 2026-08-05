@@ -11,6 +11,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useTransferFunds, type Bank } from "@/lib/queries";
+import { formatMoney } from "@/lib/format";
 
 export function TransferDialog({
   open, onOpenChange, fromBank, banks,
@@ -83,6 +84,9 @@ export function TransferDialog({
             <div>
               <Label>Amount</Label>
               <Input type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <p className="text-xs text-muted-foreground mt-1">
+                Available: {formatMoney(banks.find((b) => b.id === from)?.current_balance ?? 0)}
+              </p>
             </div>
             <div>
               <Label>Reference (optional)</Label>

@@ -8,7 +8,7 @@ import {
   useUpdateSalarySheetCell, useDeleteSalarySheetRow,
   type SalarySheetRow,
 } from "@/lib/salary-sheet";
-import { formatMoney } from "@/lib/format";
+import { Money } from "@/lib/privacy";
 
 type Props = {
   rows: SalarySheetRow[];
@@ -120,14 +120,14 @@ export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
                     <NumCell value={Number(r[k] || 0)} onCommit={(n) => commit(r, k, n)} />
                   </td>
                 )).slice(0, EARNING_FIELDS.length)}
-                <td className="px-2 py-1 border-b text-right font-semibold bg-emerald-500/5 tabular-nums">{formatMoney(totals.gross_pay)}</td>
+                <td className="px-2 py-1 border-b text-right font-semibold bg-emerald-500/5 tabular-nums">{<Money value={totals.gross_pay} />}</td>
                 {EDITABLE_KEYS.slice(EARNING_FIELDS.length).map((k) => (
                   <td key={k} className="px-1 py-0.5 border-b text-right">
                     <NumCell value={Number(r[k] || 0)} onCommit={(n) => commit(r, k, n)} />
                   </td>
                 ))}
-                <td className="px-2 py-1 border-b text-right font-semibold bg-destructive/5 tabular-nums">{formatMoney(totals.total_deductions)}</td>
-                <td className="px-2 py-1 border-b text-right font-bold text-primary bg-primary/5 tabular-nums">{formatMoney(totals.net_pay)}</td>
+                <td className="px-2 py-1 border-b text-right font-semibold bg-destructive/5 tabular-nums">{<Money value={totals.total_deductions} />}</td>
+                <td className="px-2 py-1 border-b text-right font-bold text-primary bg-primary/5 tabular-nums">{<Money value={totals.net_pay} />}</td>
                 <td className="px-2 py-1 border-b text-center">
                   <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] uppercase ${
                     r.status === "paid" ? "bg-emerald-500/15 text-emerald-600"
@@ -165,10 +165,10 @@ export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
             <tfoot className="sticky bottom-0 bg-muted/90 backdrop-blur font-semibold">
               <tr>
                 <td colSpan={cols} className="px-2 py-2 text-right">Column totals →</td>
-                <td className="px-2 py-2 text-right bg-emerald-500/10 tabular-nums">{formatMoney(total.gross)}</td>
+                <td className="px-2 py-2 text-right bg-emerald-500/10 tabular-nums">{<Money value={total.gross} />}</td>
                 <td colSpan={DEDUCTION_FIELDS.length}></td>
-                <td className="px-2 py-2 text-right bg-destructive/10 tabular-nums">{formatMoney(total.ded)}</td>
-                <td className="px-2 py-2 text-right bg-primary/10 tabular-nums">{formatMoney(total.net)}</td>
+                <td className="px-2 py-2 text-right bg-destructive/10 tabular-nums">{<Money value={total.ded} />}</td>
+                <td className="px-2 py-2 text-right bg-primary/10 tabular-nums">{<Money value={total.net} />}</td>
                 <td colSpan={2}></td>
               </tr>
             </tfoot>

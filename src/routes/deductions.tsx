@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useDeductionTypes, useUpsertDeductionType, useDeleteDeductionType, type DeductionType } from "@/lib/queries";
-import { formatMoney } from "@/lib/format";
+import { Money, SensitiveToggle } from "@/lib/privacy";
 
 export const Route = createFileRoute("/deductions")({
   head: () => ({ meta: [
@@ -49,7 +49,7 @@ function DeductionsPage() {
     <div className="space-y-4">
       <div className="flex items-end justify-between gap-3">
         <div><h1 className="text-2xl font-semibold tracking-tight">Deductions</h1><p className="text-sm text-muted-foreground mt-1">Master list of deductions applied during payroll processing.</p></div>
-        <Button onClick={openNew}><Plus className="h-4 w-4" /> Add Deduction</Button>
+        <div className="flex gap-2"><SensitiveToggle /><Button onClick={openNew}><Plus className="h-4 w-4" /> Add Deduction</Button></div>
       </div>
       <Card className="glass-card"><CardContent className="p-0">
         <Table>
@@ -65,7 +65,7 @@ function DeductionsPage() {
                 <TableCell className="font-medium">{a.name}</TableCell>
                 <TableCell className="font-mono text-xs">{a.code ?? "—"}</TableCell>
                 <TableCell className="capitalize">{a.amount_type.replace("_", " ")}</TableCell>
-                <TableCell className="text-right">{a.amount_type === "percent_of_basic" ? `${a.amount}%` : formatMoney(a.amount)}</TableCell>
+                <TableCell className="text-right">{a.amount_type === "percent_of_basic" ? `${a.amount}%` : <Money value={a.amount} />}</TableCell>
                 <TableCell><Badge variant={a.status === "active" ? "secondary" : "outline"} className="capitalize">{a.status}</Badge></TableCell>
                 <TableCell className="text-right">
                   <Button size="icon" variant="ghost" onClick={() => openEdit(a)}><Pencil className="h-3.5 w-3.5" /></Button>

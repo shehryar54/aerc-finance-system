@@ -3,7 +3,8 @@ import { Landmark, Pencil, ArrowRightLeft, ArrowUpRight, ArrowDownRight, Clock }
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatMoney, formatDateTime } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
+import { Money } from "@/lib/privacy";
 import type { Bank, BankTransaction } from "@/lib/queries";
 import { OpeningBalanceDialog } from "./opening-balance-dialog";
 import { TransferDialog } from "./transfer-dialog";
@@ -49,9 +50,9 @@ export function BankCard({
 
           <div>
             <div className="text-xs uppercase tracking-wide text-muted-foreground">Current Balance</div>
-            <div className="text-3xl font-semibold tracking-tight">{formatMoney(bank.current_balance)}</div>
+            <div className="text-3xl font-semibold tracking-tight">{<Money value={bank.current_balance} />}</div>
             <div className="mt-1 text-xs text-muted-foreground">
-              Opening: {formatMoney(bank.opening_balance)}
+              Opening: {<Money value={bank.opening_balance} />}
             </div>
           </div>
 
@@ -60,14 +61,14 @@ export function BankCard({
               <div className="mt-0.5 rounded-md bg-success/10 p-1.5 text-success"><ArrowDownRight className="h-3.5 w-3.5" /></div>
               <div>
                 <div className="text-[11px] text-muted-foreground">Total Credit</div>
-                <div className="text-sm font-medium text-success">{formatMoney(totals.credit)}</div>
+                <div className="text-sm font-medium text-success">{<Money value={totals.credit} />}</div>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-0.5 rounded-md bg-destructive/10 p-1.5 text-destructive"><ArrowUpRight className="h-3.5 w-3.5" /></div>
               <div>
                 <div className="text-[11px] text-muted-foreground">Total Debit</div>
-                <div className="text-sm font-medium text-destructive">{formatMoney(totals.debit)}</div>
+                <div className="text-sm font-medium text-destructive">{<Money value={totals.debit} />}</div>
               </div>
             </div>
           </div>

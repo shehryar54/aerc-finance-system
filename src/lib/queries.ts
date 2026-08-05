@@ -129,6 +129,16 @@ export function useTransferFunds() {
   return useMutation({
     mutationFn: async (args: { fromBankId: string; toBankId: string; amount: number; description: string; reference?: string }) => {
       const ref = args.reference || `TRF-${Date.now()}`;
+      // Guard: never let a transfer push the source bank into a negative balance.
+      const { data: src, error: eSrc } = await supabase
+        .from("banks" as never).select("name,current_balance").eq("id", args.fromBankId).single();
+      if (eSrc) throw eSrc;
+      const available = Number((src as unknown as Bank | null)?.current_balance ?? 0);
+      if (args.amount > available) {
+        throw new Error(
+          `Insufficient balance in ${(src as unknown as Bank).name}. Available: ${available.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+        );
+      }
       const { error: e1 } = await supabase.from("bank_transactions" as never).insert({
         bank_id: args.fromBankId, description: `Transfer out: ${args.description}`, reference_no: ref, debit: args.amount, credit: 0,
       } as never);
