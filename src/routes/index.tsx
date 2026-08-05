@@ -18,10 +18,10 @@ import { Card, CardContent } from "@/components/ui/card";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Finance Hub" },
+      { title: "Dashboard — Smart Finance System" },
       { name: "description", content: "Real-time overview of banks, cash flow, payroll and recent activity." },
-      { property: "og:title", content: "Dashboard — Finance Hub" },
-      { property: "og:description", content: "Real-time overview of banks, cash flow, payroll and activity." },
+      { property: "og:title", content: "Dashboard — Smart Finance System" },
+      { property: "og:description", content: "Real-time overview of banks, cash flow, payroll and recent activity." },
     ],
   }),
   component: DashboardPage,
