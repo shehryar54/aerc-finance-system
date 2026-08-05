@@ -1,4 +1,4 @@
-import { openPrintWindow, escapeHtml, splitRsPs } from "@/lib/print-templates";
+import { openPrintWindow, aercHeader, escapeHtml, splitRsPs } from "@/lib/print-templates";
 import type { LedgerEntry } from "@/lib/ledger";
 
 type Head = { id: string; name: string; code?: string | null; type?: string };
