@@ -7,7 +7,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Search, ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { Money } from "@/lib/privacy";
 import type { Bank, BankTransaction } from "@/lib/queries";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -87,9 +88,9 @@ export function RecentTransactions({
                   <TableCell>{bankMap[t.bank_id] ?? "—"}</TableCell>
                   <TableCell className="max-w-[280px] truncate">{t.description}</TableCell>
                   <TableCell className="text-muted-foreground">{t.reference_no ?? "—"}</TableCell>
-                  <TableCell className="text-right text-success">{Number(t.credit) > 0 ? formatMoney(t.credit) : "—"}</TableCell>
-                  <TableCell className="text-right text-destructive">{Number(t.debit) > 0 ? formatMoney(t.debit) : "—"}</TableCell>
-                  <TableCell className="text-right font-medium">{formatMoney(t.balance_after_transaction)}</TableCell>
+                  <TableCell className="text-right text-success">{Number(t.credit) > 0 ? <Money value={t.credit} /> : "—"}</TableCell>
+                  <TableCell className="text-right text-destructive">{Number(t.debit) > 0 ? <Money value={t.debit} /> : "—"}</TableCell>
+                  <TableCell className="text-right font-medium"><Money value={t.balance_after_transaction} /></TableCell>
                   <TableCell><Badge variant="secondary" className="capitalize">{t.status}</Badge></TableCell>
                 </TableRow>
               ))}
