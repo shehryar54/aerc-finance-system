@@ -4,7 +4,8 @@ import {
   Users, Wallet, ArrowDownRight, ArrowUpRight, Landmark, HandCoins, PiggyBank, Receipt,
 } from "lucide-react";
 import { useBanks, useTransactions, useEmployees, useActivity } from "@/lib/queries";
-import { formatMoney, greeting, financialYear, formatDate } from "@/lib/format";
+import { greeting, financialYear, formatDate } from "@/lib/format";
+import { useMoney, SensitiveToggle } from "@/lib/privacy";
 import { BankCard } from "@/components/dashboard/bank-card";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { DashboardCharts } from "@/components/dashboard/charts";
@@ -43,6 +44,7 @@ function DashboardPage() {
     return { credit, debit, opening, net: opening + credit - debit };
   }, [transactions, banks]);
 
+  const money = useMoney();
   const now = new Date();
 
   return (
@@ -56,7 +58,10 @@ function DashboardPage() {
             {formatDate(now)} • {now.toLocaleDateString("en-US", { month: "long" })} • FY {financialYear()}
           </div>
         </div>
-        <QuickActions banks={banks} />
+        <div className="flex items-center gap-2">
+          <SensitiveToggle />
+          <QuickActions banks={banks} />
+        </div>
       </div>
 
       {/* Bank cards */}
@@ -73,13 +78,13 @@ function DashboardPage() {
       {/* Stats */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Total Employees" value={String(employees.length)} icon={Users} />
-        <StatCard label="Monthly Payroll" value={formatMoney(employees.reduce((s, e) => s + Number(e.basic_salary ?? 0), 0))} icon={Wallet} tone="warning" />
-        <StatCard label="Total Credits" value={formatMoney(totals.credit)} icon={ArrowDownRight} tone="success" />
-        <StatCard label="Total Debits" value={formatMoney(totals.debit)} icon={ArrowUpRight} tone="destructive" />
-        <StatCard label="Net Cash" value={formatMoney(totals.net)} icon={Landmark} />
-        <StatCard label="Pending Loans" value={formatMoney(0)} icon={HandCoins} hint="Module coming" />
-        <StatCard label="Provident Fund" value={formatMoney(0)} icon={PiggyBank} hint="Module coming" />
-        <StatCard label="Income Tax" value={formatMoney(0)} icon={Receipt} hint="Module coming" />
+        <StatCard label="Monthly Payroll" value={money(employees.reduce((s, e) => s + Number(e.basic_salary ?? 0), 0))} icon={Wallet} tone="warning" />
+        <StatCard label="Total Credits" value={money(totals.credit)} icon={ArrowDownRight} tone="success" />
+        <StatCard label="Total Debits" value={money(totals.debit)} icon={ArrowUpRight} tone="destructive" />
+        <StatCard label="Net Cash" value={money(totals.net)} icon={Landmark} />
+        <StatCard label="Pending Loans" value={money(0)} icon={HandCoins} hint="Module coming" />
+        <StatCard label="Provident Fund" value={money(0)} icon={PiggyBank} hint="Module coming" />
+        <StatCard label="Income Tax" value={money(0)} icon={Receipt} hint="Module coming" />
       </section>
 
       {/* Charts */}

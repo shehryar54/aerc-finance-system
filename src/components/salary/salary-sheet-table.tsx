@@ -8,7 +8,7 @@ import {
   useUpdateSalarySheetCell, useDeleteSalarySheetRow,
   type SalarySheetRow,
 } from "@/lib/salary-sheet";
-import { formatMoney } from "@/lib/format";
+import { Money } from "@/lib/privacy";
 
 type Props = {
   rows: SalarySheetRow[];

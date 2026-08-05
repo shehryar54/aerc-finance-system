@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useEmployees, useLoans, useUpsertLoan, useDeleteLoan, type Loan } from "@/lib/queries";
-import { formatMoney, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { Money, SensitiveToggle } from "@/lib/privacy";
 
 export const Route = createFileRoute("/loans")({
   head: () => ({ meta: [
@@ -61,7 +62,7 @@ function LoansPage() {
     <div className="space-y-4">
       <div className="flex items-end justify-between gap-3">
         <div><h1 className="text-2xl font-semibold tracking-tight">Loans</h1><p className="text-sm text-muted-foreground mt-1">Employee loan advances and monthly deductions. Total outstanding: <b>{<Money value={totalOutstanding} />}</b>.</p></div>
-        <Button onClick={openNew}><Plus className="h-4 w-4" /> Add Loan</Button>
+        <div className="flex gap-2"><SensitiveToggle /><Button onClick={openNew}><Plus className="h-4 w-4" /> Add Loan</Button></div>
       </div>
       <Card className="glass-card"><CardContent className="p-0">
         <Table>

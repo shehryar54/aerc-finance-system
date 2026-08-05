@@ -3,7 +3,8 @@ import { Landmark, Pencil, ArrowRightLeft, ArrowUpRight, ArrowDownRight, Clock }
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatMoney, formatDateTime } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
+import { Money } from "@/lib/privacy";
 import type { Bank, BankTransaction } from "@/lib/queries";
 import { OpeningBalanceDialog } from "./opening-balance-dialog";
 import { TransferDialog } from "./transfer-dialog";

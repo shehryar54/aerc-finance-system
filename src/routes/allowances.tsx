@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAllowanceTypes, useUpsertAllowanceType, useDeleteAllowanceType, type AllowanceType } from "@/lib/queries";
-import { formatMoney } from "@/lib/format";
+import { Money, SensitiveToggle } from "@/lib/privacy";
 
 export const Route = createFileRoute("/allowances")({
   head: () => ({ meta: [
@@ -55,7 +55,7 @@ function AllowancesPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Allowances</h1>
           <p className="text-sm text-muted-foreground mt-1">Master list of salary allowances used in payroll processing.</p>
         </div>
-        <Button onClick={openNew}><Plus className="h-4 w-4" /> Add Allowance</Button>
+        <div className="flex gap-2"><SensitiveToggle /><Button onClick={openNew}><Plus className="h-4 w-4" /> Add Allowance</Button></div>
       </div>
 
       <Card className="glass-card"><CardContent className="p-0">
@@ -73,7 +73,7 @@ function AllowancesPage() {
                 <TableCell className="font-medium">{a.name}</TableCell>
                 <TableCell className="font-mono text-xs">{a.code ?? "—"}</TableCell>
                 <TableCell className="capitalize">{a.amount_type.replace("_", " ")}</TableCell>
-                <TableCell className="text-right">{a.amount_type === "percent_of_basic" ? `${a.amount}%` : formatMoney(a.amount)}</TableCell>
+                <TableCell className="text-right">{a.amount_type === "percent_of_basic" ? `${a.amount}%` : <Money value={a.amount} />}</TableCell>
                 <TableCell>{a.taxable ? <Badge variant="secondary">Taxable</Badge> : <Badge variant="outline">Exempt</Badge>}</TableCell>
                 <TableCell><Badge variant={a.status === "active" ? "secondary" : "outline"} className="capitalize">{a.status}</Badge></TableCell>
                 <TableCell className="text-right">

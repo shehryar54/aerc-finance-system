@@ -20,7 +20,7 @@ import {
 import { EmployeeDialog } from "@/components/employees/employee-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { formatMoney } from "@/lib/format";
+import { Money, Masked, SensitiveToggle } from "@/lib/privacy";
 
 export const Route = createFileRoute("/employees")({
   head: () => ({
@@ -91,9 +91,12 @@ function EmployeesPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Employee Management</h1>
           <p className="text-sm text-muted-foreground mt-1">Search, filter, and manage the full employee directory.</p>
         </div>
-        <Button onClick={() => { setEditing(undefined); setDialogOpen(true); }}>
-          <Plus className="h-4 w-4" /> Add Employee
-        </Button>
+        <div className="flex gap-2">
+          <SensitiveToggle />
+          <Button onClick={() => { setEditing(undefined); setDialogOpen(true); }}>
+            <Plus className="h-4 w-4" /> Add Employee
+          </Button>
+        </div>
       </div>
 
       <Card className="glass-card">
@@ -168,7 +171,7 @@ function EmployeesPage() {
                     <TableCell>{e.department ?? "—"}</TableCell>
                     <TableCell>{e.designation ?? "—"}</TableCell>
                     <TableCell>{e.bps ? `BPS-${e.bps}` : "—"}</TableCell>
-                    <TableCell>{e.phone ?? "—"}</TableCell>
+                    <TableCell><Masked value={e.phone} /></TableCell>
                     <TableCell className="text-right">{<Money value={e.basic_salary} />}</TableCell>
                     <TableCell><Badge variant={e.status === "active" ? "secondary" : "outline"} className="capitalize">{e.status.replace("_", " ")}</Badge></TableCell>
                     <TableCell className="text-right">

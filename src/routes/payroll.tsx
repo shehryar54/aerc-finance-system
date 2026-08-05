@@ -14,7 +14,7 @@ import {
   EARNING_FIELDS, DEDUCTION_FIELDS,
   type SalarySheetRow,
 } from "@/lib/salary-sheet";
-import { formatMoney } from "@/lib/format";
+import { useMoney, SensitiveToggle } from "@/lib/privacy";
 import { SalarySheetTable } from "@/components/salary/salary-sheet-table";
 import { SalarySheetSlipDialog } from "@/components/salary/salary-sheet-slip";
 
@@ -42,6 +42,7 @@ function PayrollPage() {
   const [month, setMonth] = useState(DEFAULT_MONTH);
   const [query, setQuery] = useState("");
   const [slipRow, setSlipRow] = useState<SalarySheetRow | undefined>();
+  const money = useMoney();
 
   const empQ = useEmployees();
   const sheetQ = useSalarySheet(year, month);
@@ -129,6 +130,7 @@ function PayrollPage() {
           </p>
         </div>
         <div className="flex gap-2 items-center">
+          <SensitiveToggle />
           <Select value={String(month)} onValueChange={(v) => setMonth(Number(v))}>
             <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
             <SelectContent>{MONTHS.map((m, i) => <SelectItem key={m} value={String(i + 1)}>{m}</SelectItem>)}</SelectContent>
@@ -147,9 +149,9 @@ function PayrollPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Rows", value: stats.count, hint: `${stats.paid} paid` },
-          { label: "Total Gross", value: formatMoney(stats.gross) },
-          { label: "Total Deductions", value: formatMoney(stats.ded) },
-          { label: "Total Net Pay", value: formatMoney(stats.net) },
+          { label: "Total Gross", value: money(stats.gross) },
+          { label: "Total Deductions", value: money(stats.ded) },
+          { label: "Total Net Pay", value: money(stats.net) },
         ].map((s) => (
           <Card key={s.label} className="glass-card">
             <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground font-medium">{s.label}</CardTitle></CardHeader>
