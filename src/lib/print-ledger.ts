@@ -1,11 +1,22 @@
-import { openPrintWindow, aercHeader, escapeHtml, splitRsPs } from "@/lib/print-templates";
+import { openPrintWindow, escapeHtml, splitRsPs } from "@/lib/print-templates";
 import type { LedgerEntry } from "@/lib/ledger";
 
 type Head = { id: string; name: string; code?: string | null; type?: string };
 
-/** Ledger sheet — matches ledger_format.pdf.
- *  One account per sheet, with Month & Date, Voucher No, Particulars, Folio,
- *  Debit (Rs/Ps), Credit (Rs/Ps), Dr/Cr, Balance (Rs/Ps). */
+/** Plain text header used by the ruled ledger sheet (no logos — matches the printed book). */
+function ledgerHeader(): string {
+  return `
+    <div class="lg-head">
+      <div class="h1">APPLIED ECONOMICS RESEARCH CENTRE</div>
+      <div class="h2">(INSTITUTION OF NATIONAL CAPABILITY IN APPLIED ECONOMICS)</div>
+      <div class="h3">University of Karachi</div>
+    </div>
+  `;
+}
+
+/** Ledger sheet — matches ledger_format.pdf exactly.
+ *  Year shown once, month only when it changes, per-row balance left blank,
+ *  ruled blank rows filling the sheet and a single closing total row. */
 export function printLedgerSheet(opts: {
   account: Head;
   rows: LedgerEntry[];
@@ -14,38 +25,49 @@ export function printLedgerSheet(opts: {
   to?: string;
 }) {
   const { account, rows } = opts;
+  const TOTAL_ROWS = 19;
+
   let bal = 0;
-  const bodyRows = rows.map((r) => {
+  let lastYear = "";
+  let lastMonth = "";
+  const bodyRows: string[] = [];
+
+  for (const r of rows) {
     const d = Number(r.debit), c = Number(r.credit);
     bal += d - c;
-    const drCr = bal >= 0 ? "Dr" : "Cr";
     const dt = new Date(r.entry_date);
+    const year = String(dt.getFullYear());
     const month = dt.toLocaleString("en-US", { month: "short" });
     const day = dt.getDate().toString().padStart(2, "0");
+
+    if (year !== lastYear) {
+      bodyRows.push(`<tr><td class="m">${year}</td><td class="d"></td>${Array.from({ length: 10 }).map(() => "<td></td>").join("")}</tr>`);
+      lastYear = year;
+      lastMonth = "";
+    }
+    const showMonth = month !== lastMonth;
+    lastMonth = month;
+
     const debit = splitRsPs(d);
     const credit = splitRsPs(c);
-    const balance = splitRsPs(Math.abs(bal));
-    return `<tr>
-      <td class="center"><span class="mono">${month}</span></td>
-      <td class="center"><span class="mono">${day}</span></td>
-      <td class="center"><span class="mono">${escapeHtml(r.voucher_no ?? "")}</span></td>
-      <td>${escapeHtml(r.particulars)}${r.remarks ? ` <span style="color:#555;font-size:10px">— ${escapeHtml(r.remarks)}</span>` : ""}</td>
-      <td class="center"><span class="mono">${escapeHtml(r.folio ?? "")}</span></td>
-      <td class="right mono">${d ? debit.rs : ""}</td>
-      <td class="right mono">${d ? debit.ps : ""}</td>
-      <td class="right mono">${c ? credit.rs : ""}</td>
-      <td class="right mono">${c ? credit.ps : ""}</td>
-      <td class="center"><b>${drCr}</b></td>
-      <td class="right mono">${balance.rs}</td>
-      <td class="right mono">${balance.ps}</td>
-    </tr>`;
-  }).join("");
+    bodyRows.push(`<tr>
+      <td class="m">${showMonth ? month : ""}</td>
+      <td class="d">${day}</td>
+      <td class="center">${escapeHtml(r.voucher_no ?? "")}</td>
+      <td class="part">${escapeHtml(r.particulars)}${r.remarks ? ` ${escapeHtml(r.remarks)}` : ""}</td>
+      <td class="center">${escapeHtml(r.folio ?? "")}</td>
+      <td class="right">${d ? debit.rs : ""}</td>
+      <td class="right">${d ? debit.ps : ""}</td>
+      <td class="right">${c ? credit.rs : ""}</td>
+      <td class="right">${c ? credit.ps : ""}</td>
+      <td></td><td></td><td></td>
+    </tr>`);
+  }
 
-  // Pad to 20 rows for that ruled-book feel
-  const padCount = Math.max(0, 20 - rows.length);
-  const padRows = Array.from({ length: padCount }).map(() =>
-    `<tr>${Array.from({ length: 12 }).map(() => `<td style="height:22px"></td>`).join("")}</tr>`
-  ).join("");
+  const padCount = Math.max(0, TOTAL_ROWS - bodyRows.length);
+  const padRows = Array.from({ length: padCount })
+    .map(() => `<tr>${Array.from({ length: 12 }).map(() => `<td style="height:26px"></td>`).join("")}</tr>`)
+    .join("");
 
   const totalD = rows.reduce((a, r) => a + Number(r.debit), 0);
   const totalC = rows.reduce((a, r) => a + Number(r.credit), 0);
@@ -53,50 +75,72 @@ export function printLedgerSheet(opts: {
   const drCrFinal = bal >= 0 ? "Dr" : "Cr";
 
   const body = `
-    ${aercHeader()}
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:8px 0 4px 0;">
-      <div><b>NAME OF ACCOUNT</b> &nbsp; <span class="u" style="min-width:340px;"><i>${escapeHtml(account.name)}</i></span></div>
-      <div><b>SHEET NO.</b> &nbsp; <span style="border:1px solid #000;padding:2px 14px;min-width:60px;display:inline-block;text-align:center;">${escapeHtml(opts.sheetNo ?? "001")}</span></div>
+    ${ledgerHeader()}
+    <div class="acct-line">
+      <span class="lbl">NAME OF ACCOUNT</span>
+      <span class="acct-name">${escapeHtml(account.name.toUpperCase())}</span>
+      <span class="sheet-lbl">SHEET NO.</span>
+      <span class="sheet-box">${escapeHtml(opts.sheetNo ?? "001")}</span>
     </div>
-    <table>
+    <table class="ledger">
       <thead>
         <tr>
-          <th colspan="2">Month<br/>&amp;<br/>Date</th>
-          <th rowspan="2" style="width:70px;">Voucher<br/>No.</th>
+          <th colspan="2" class="hd-md">Month<br/>&amp;<br/>Date</th>
+          <th rowspan="2" style="width:62px;">Voucher<br/>No.</th>
           <th rowspan="2">PARTICULARS</th>
-          <th rowspan="2" style="width:50px;">Folio</th>
+          <th rowspan="2" style="width:46px;">Folio</th>
           <th colspan="2">DEBIT</th>
           <th colspan="2">CREDIT</th>
-          <th rowspan="2" style="width:44px;">DR.<br/>or<br/>CR.</th>
+          <th rowspan="2" style="width:34px;">DR.<br/>or<br/>CR.</th>
           <th colspan="2">BALANCE</th>
         </tr>
         <tr>
-          <th style="width:44px;">M</th>
-          <th style="width:34px;">D</th>
-          <th class="right" style="width:80px;">Rs.</th><th class="right" style="width:32px;">Ps.</th>
-          <th class="right" style="width:80px;">Rs.</th><th class="right" style="width:32px;">Ps.</th>
-          <th class="right" style="width:80px;">Rs.</th><th class="right" style="width:32px;">Ps.</th>
+          <th style="width:38px;">&nbsp;</th>
+          <th style="width:26px;">&nbsp;</th>
+          <th style="width:74px;">Rs.</th><th style="width:26px;">Ps.</th>
+          <th style="width:74px;">Rs.</th><th style="width:26px;">Ps.</th>
+          <th style="width:74px;">Rs.</th><th style="width:26px;">Ps.</th>
         </tr>
       </thead>
       <tbody>
-        ${bodyRows}
+        ${bodyRows.join("")}
         ${padRows}
-        <tr style="font-weight:700;background:#f2f2f2;">
-          <td colspan="5" class="right">Total</td>
-          <td class="right mono">${td.rs}</td><td class="right mono">${td.ps}</td>
-          <td class="right mono">${tc.rs}</td><td class="right mono">${tc.ps}</td>
+        <tr class="closing">
+          <td colspan="5"></td>
+          <td class="right">${totalD ? td.rs : ""}</td><td class="right">${totalD ? td.ps : ""}</td>
+          <td class="right">${totalC ? tc.rs : ""}</td><td class="right">${totalC ? tc.ps : ""}</td>
           <td class="center">${drCrFinal}</td>
-          <td class="right mono">${tb.rs}</td><td class="right mono">${tb.ps}</td>
+          <td class="right">${tb.rs}</td><td class="right">${tb.ps}</td>
         </tr>
       </tbody>
     </table>
-    <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:6px;color:#555;">
-      <div>Printed: ${escapeHtml(new Date().toLocaleString())}</div>
-      <div>${opts.from ? `From ${escapeHtml(opts.from)}` : ""} ${opts.to ? `to ${escapeHtml(opts.to)}` : ""}</div>
-    </div>
   `;
-  openPrintWindow(`Ledger — ${account.name}`, body, `@page{size:A4 landscape;margin:10mm;}`);
+
+  const css = `
+    @page{size:A4 landscape;margin:12mm;}
+    body{font-family:'Times New Roman',Times,serif;font-size:11px;}
+    .lg-head{text-align:center;margin-bottom:10px;}
+    .lg-head .h1{font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:19px;}
+    .lg-head .h2{font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:11px;margin-top:2px;}
+    .lg-head .h3{font-family:Arial,Helvetica,sans-serif;font-size:12px;margin-top:1px;}
+    .acct-line{display:flex;align-items:flex-end;gap:8px;margin:0 0 6px 0;}
+    .acct-line .lbl{font-family:Arial,Helvetica,sans-serif;font-size:13px;}
+    .acct-line .acct-name{flex:1;text-align:center;font-style:italic;font-size:13px;letter-spacing:.5px;border-bottom:1px solid #000;}
+    .acct-line .sheet-lbl{font-family:Arial,Helvetica,sans-serif;font-size:9px;}
+    .acct-line .sheet-box{border:1px solid #000;padding:2px 18px;font-family:Arial,Helvetica,sans-serif;font-size:12px;}
+    table.ledger{border-collapse:collapse;width:100%;table-layout:fixed;}
+    table.ledger th,table.ledger td{border:1px solid #000;padding:1px 3px;font-size:11px;vertical-align:top;}
+    table.ledger th{font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:10px;text-align:center;vertical-align:middle;}
+    table.ledger td.m,table.ledger td.d{text-align:center;}
+    table.ledger td.part{text-align:left;}
+    table.ledger td.right{text-align:right;}
+    table.ledger td.center{text-align:center;}
+    table.ledger tr td{height:26px;}
+    table.ledger tr.closing td{height:20px;font-weight:400;}
+  `;
+  openPrintWindow(`Ledger — ${account.name}`, body, css);
 }
+
 
 /** Cash Book — matches cashbook_format.pdf (Receipts + Payments, two facing pages). */
 export function printCashBook(opts: {
