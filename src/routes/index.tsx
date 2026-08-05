@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Users, Wallet, ArrowDownRight, ArrowUpRight, Landmark, HandCoins, PiggyBank, Receipt,
 } from "lucide-react";
@@ -45,6 +45,8 @@ function DashboardPage() {
   }, [transactions, banks]);
 
   const money = useMoney();
+  const [greet, setGreet] = useState("Welcome");
+  useEffect(() => setGreet(greeting()), []);
   const now = new Date();
 
   return (
@@ -52,7 +54,7 @@ function DashboardPage() {
       {/* Greeting */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <div className="text-sm text-muted-foreground">{greeting()},</div>
+          <div className="text-sm text-muted-foreground">{greet},</div>
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Welcome back to Finance Hub</h1>
           <div className="text-xs text-muted-foreground mt-1">
             {formatDate(now)} • {now.toLocaleDateString("en-US", { month: "long" })} • FY {financialYear()}
