@@ -60,7 +60,7 @@ function LoansPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-end justify-between gap-3">
-        <div><h1 className="text-2xl font-semibold tracking-tight">Loans</h1><p className="text-sm text-muted-foreground mt-1">Employee loan advances and monthly deductions. Total outstanding: <b>{formatMoney(totalOutstanding)}</b>.</p></div>
+        <div><h1 className="text-2xl font-semibold tracking-tight">Loans</h1><p className="text-sm text-muted-foreground mt-1">Employee loan advances and monthly deductions. Total outstanding: <b>{<Money value={totalOutstanding} />}</b>.</p></div>
         <Button onClick={openNew}><Plus className="h-4 w-4" /> Add Loan</Button>
       </div>
       <Card className="glass-card"><CardContent className="p-0">
@@ -79,9 +79,9 @@ function LoansPage() {
                 <TableRow key={l.id}>
                   <TableCell className="font-medium">{e?.full_name ?? "—"}<div className="text-xs text-muted-foreground">{e?.employee_code}</div></TableCell>
                   <TableCell className="capitalize">{l.loan_type}</TableCell>
-                  <TableCell className="text-right">{formatMoney(l.principal)}</TableCell>
-                  <TableCell className="text-right">{formatMoney(l.monthly_installment)}</TableCell>
-                  <TableCell className="text-right">{formatMoney(l.remaining_balance)}</TableCell>
+                  <TableCell className="text-right">{<Money value={l.principal} />}</TableCell>
+                  <TableCell className="text-right">{<Money value={l.monthly_installment} />}</TableCell>
+                  <TableCell className="text-right">{<Money value={l.remaining_balance} />}</TableCell>
                   <TableCell>{formatDate(l.start_date)}</TableCell>
                   <TableCell><Badge variant={l.status === "active" ? "secondary" : "outline"} className="capitalize">{l.status}</Badge></TableCell>
                   <TableCell className="text-right">

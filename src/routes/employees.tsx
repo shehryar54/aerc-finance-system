@@ -169,7 +169,7 @@ function EmployeesPage() {
                     <TableCell>{e.designation ?? "—"}</TableCell>
                     <TableCell>{e.bps ? `BPS-${e.bps}` : "—"}</TableCell>
                     <TableCell>{e.phone ?? "—"}</TableCell>
-                    <TableCell className="text-right">{formatMoney(e.basic_salary)}</TableCell>
+                    <TableCell className="text-right">{<Money value={e.basic_salary} />}</TableCell>
                     <TableCell><Badge variant={e.status === "active" ? "secondary" : "outline"} className="capitalize">{e.status.replace("_", " ")}</Badge></TableCell>
                     <TableCell className="text-right">
                       <Button size="icon" variant="ghost" title="Salary History" onClick={() => setHistoryFor(e)}><History className="h-3.5 w-3.5" /></Button>
