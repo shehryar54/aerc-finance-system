@@ -19,6 +19,7 @@ export type Database = {
           bank_id: string | null
           code: string | null
           created_at: string
+          hec_code: string | null
           id: string
           name: string
           status: string
@@ -29,6 +30,7 @@ export type Database = {
           bank_id?: string | null
           code?: string | null
           created_at?: string
+          hec_code?: string | null
           id?: string
           name: string
           status?: string
@@ -39,6 +41,7 @@ export type Database = {
           bank_id?: string | null
           code?: string | null
           created_at?: string
+          hec_code?: string | null
           id?: string
           name?: string
           status?: string
@@ -791,6 +794,7 @@ export type Database = {
           computer: number
           conveyance: number
           created_at: string
+          custom_allowances: Json
           differential: number
           earn: number
           employee_id: string
@@ -837,6 +841,7 @@ export type Database = {
           computer?: number
           conveyance?: number
           created_at?: string
+          custom_allowances?: Json
           differential?: number
           earn?: number
           employee_id: string
@@ -883,6 +888,7 @@ export type Database = {
           computer?: number
           conveyance?: number
           created_at?: string
+          custom_allowances?: Json
           differential?: number
           earn?: number
           employee_id?: string

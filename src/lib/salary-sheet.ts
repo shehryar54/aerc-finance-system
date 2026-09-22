@@ -48,10 +48,26 @@ export type SalarySheetRow = {
   without_flag: number;
   nafa: number;
   salary_switch: number;
+  custom_allowances: Record<string, number> | null;
   status: "draft" | "finalized" | "paid";
   paid_at: string | null;
   remarks: string | null;
 };
+
+/** Distinct dynamic Ad-hoc / custom allowance names present in the given rows. */
+export function customAllowanceKeys(rows: SalarySheetRow[]): string[] {
+  const set = new Set<string>();
+  for (const r of rows) {
+    for (const k of Object.keys(r.custom_allowances ?? {})) set.add(k);
+  }
+  return Array.from(set).sort();
+}
+
+export const customValue = (row: Partial<SalarySheetRow>, key: string) =>
+  Number((row.custom_allowances ?? {})[key] ?? 0);
+
+export const customTotal = (row: Partial<SalarySheetRow>) =>
+  Object.values(row.custom_allowances ?? {}).reduce((a, v) => a + Number(v || 0), 0);
 
 export const EARNING_FIELDS: { key: keyof SalarySheetRow; label: string }[] = [
   { key: "basic_pay", label: "Basic Pay" },
@@ -93,7 +109,7 @@ export const EDITABLE_KEYS = [
 ] as (keyof SalarySheetRow)[];
 
 export function computeTotals(row: Partial<SalarySheetRow>) {
-  const gross = EARNING_FIELDS.reduce((a, f) => a + Number(row[f.key] || 0), 0);
+  const gross = EARNING_FIELDS.reduce((a, f) => a + Number(row[f.key] || 0), 0) + customTotal(row);
   const deductions = DEDUCTION_FIELDS.reduce((a, f) => a + Number(row[f.key] || 0), 0);
   return { gross_pay: gross, total_deductions: deductions, net_pay: gross - deductions };
 }
@@ -165,13 +181,13 @@ export function useDeleteSalarySheetRow() {
   });
 }
 
-// Generate salary sheet rows for a month. If a previous month has data, seed
-// this month by cloning those values. Otherwise seed from the employee's basic_salary.
+// Generate salary sheet rows for a month. Basic Pay and every component are
+// derived from the employee's most recent earlier salary-sheet record; employees
+// with no salary history start with a blank row that can be filled in-place.
 export function useGenerateSalarySheet() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ year, month }: { year: number; month: number }) => {
-      // Existing rows this month
       const { data: existing, error: e1 } = await (supabase as any)
         .from("salary_sheet")
         .select("employee_id")
@@ -180,14 +196,13 @@ export function useGenerateSalarySheet() {
       if (e1) throw e1;
       const have = new Set((existing ?? []).map((r: any) => r.employee_id));
 
-      // All active employees
       const { data: emps, error: e2 } = await supabase
         .from("employees")
-        .select("id, basic_salary, status")
+        .select("id, status")
         .eq("status", "active");
       if (e2) throw e2;
 
-      // Most recent prior row per employee (for cloning)
+      // Most recent prior row per employee (source of Basic Pay & all components)
       const { data: prior, error: e3 } = await (supabase as any)
         .from("salary_sheet")
         .select("*")
@@ -214,8 +229,7 @@ export function useGenerateSalarySheet() {
           toInsert.push({ ...clone, period_year: year, period_month: month, status: "draft", paid_at: null });
         } else {
           toInsert.push({
-            employee_id: e.id, period_year: year, period_month: month,
-            basic_pay: Number(e.basic_salary || 0), status: "draft",
+            employee_id: e.id, period_year: year, period_month: month, status: "draft",
           });
         }
       }
@@ -225,5 +239,127 @@ export function useGenerateSalarySheet() {
       return toInsert.length;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["salary_sheet"] }),
+  });
+}
+
+// ---------- Dynamic Ad-hoc management ----------
+
+/** Legacy fixed ad-hoc columns that can take part in a merge. */
+export const LEGACY_ADHOC_KEYS = ["adhoc_2022", "adhoc_2023", "adhoc_2024", "adhoc_2025"] as const;
+
+async function rowsFromMonth(year: number, month: number) {
+  const { data, error } = await (supabase as any)
+    .from("salary_sheet")
+    .select("*")
+    .or(`period_year.gt.${year},and(period_year.eq.${year},period_month.gte.${month})`);
+  if (error) throw error;
+  return (data ?? []) as SalarySheetRow[];
+}
+
+async function applyPatches(patches: { id: string; patch: Record<string, unknown> }[]) {
+  for (const p of patches) {
+    const { error } = await (supabase as any).from("salary_sheet").update(p.patch).eq("id", p.id);
+    if (error) throw error;
+  }
+  return patches.length;
+}
+
+/** Merge selected ad-hoc columns (legacy and/or custom) into one new named Ad-hoc,
+ *  from the given month onward. Earlier months are left untouched. */
+export function useMergeAdhoc() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      year, month, sources, targetName,
+    }: { year: number; month: number; sources: string[]; targetName: string }) => {
+      const name = targetName.trim();
+      if (!name) throw new Error("Enter a name for the merged Ad-hoc");
+      if (sources.length < 2) throw new Error("Select at least two Ad-hoc columns to merge");
+
+      const rows = await rowsFromMonth(year, month);
+      const patches = rows.map((r) => {
+        const custom = { ...(r.custom_allowances ?? {}) };
+        let sum = 0;
+        const patch: Record<string, unknown> = {};
+        for (const s of sources) {
+          if ((LEGACY_ADHOC_KEYS as readonly string[]).includes(s)) {
+            sum += Number((r as any)[s] || 0);
+            patch[s] = 0;
+          } else {
+            sum += Number(custom[s] || 0);
+            delete custom[s];
+          }
+        }
+        custom[name] = Number((custom[name] ?? 0)) + sum;
+        patch.custom_allowances = custom;
+        return { id: r.id, patch };
+      });
+      return applyPatches(patches);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["salary_sheet"] });
+      qc.invalidateQueries({ queryKey: ["salary_sheet_emp"] });
+    },
+  });
+}
+
+/** Create a new Ad-hoc allowance from the given month onward, either as a
+ *  percentage of each employee's Basic Pay or as one fixed amount. */
+export function useCreateAdhoc() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      year, month, name, mode, value,
+    }: {
+      year: number; month: number; name: string;
+      mode: "percent_of_basic" | "fixed"; value: number;
+    }) => {
+      const label = name.trim();
+      if (!label) throw new Error("Enter a name for the new Ad-hoc");
+      if (!Number.isFinite(value) || value < 0) throw new Error("Enter a valid amount");
+      if (mode === "percent_of_basic" && value > 100) throw new Error("Percentage cannot exceed 100");
+
+      const rows = await rowsFromMonth(year, month);
+      if (rows.length === 0) throw new Error("No salary rows exist for this month — generate them first");
+      if (rows.some((r) => Object.keys(r.custom_allowances ?? {}).includes(label))) {
+        throw new Error(`An Ad-hoc named "${label}" already exists for this period`);
+      }
+      const patches = rows.map((r) => {
+        const amount = mode === "percent_of_basic"
+          ? Math.round(Number(r.basic_pay || 0) * value) / 100
+          : value;
+        return {
+          id: r.id,
+          patch: { custom_allowances: { ...(r.custom_allowances ?? {}), [label]: amount } },
+        };
+      });
+      return applyPatches(patches);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["salary_sheet"] });
+      qc.invalidateQueries({ queryKey: ["salary_sheet_emp"] });
+    },
+  });
+}
+
+/** Remove a dynamic Ad-hoc from the given month onward. */
+export function useRemoveAdhoc() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ year, month, name }: { year: number; month: number; name: string }) => {
+      const rows = await rowsFromMonth(year, month);
+      const patches = rows
+        .filter((r) => Object.keys(r.custom_allowances ?? {}).includes(name))
+        .map((r) => {
+          const custom = { ...(r.custom_allowances ?? {}) };
+          delete custom[name];
+          return { id: r.id, patch: { custom_allowances: custom } };
+        });
+      return applyPatches(patches);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["salary_sheet"] });
+      qc.invalidateQueries({ queryKey: ["salary_sheet_emp"] });
+    },
   });
 }
