@@ -48,10 +48,26 @@ export type SalarySheetRow = {
   without_flag: number;
   nafa: number;
   salary_switch: number;
+  custom_allowances: Record<string, number> | null;
   status: "draft" | "finalized" | "paid";
   paid_at: string | null;
   remarks: string | null;
 };
+
+/** Distinct dynamic Ad-hoc / custom allowance names present in the given rows. */
+export function customAllowanceKeys(rows: SalarySheetRow[]): string[] {
+  const set = new Set<string>();
+  for (const r of rows) {
+    for (const k of Object.keys(r.custom_allowances ?? {})) set.add(k);
+  }
+  return Array.from(set).sort();
+}
+
+export const customValue = (row: Partial<SalarySheetRow>, key: string) =>
+  Number((row.custom_allowances ?? {})[key] ?? 0);
+
+export const customTotal = (row: Partial<SalarySheetRow>) =>
+  Object.values(row.custom_allowances ?? {}).reduce((a, v) => a + Number(v || 0), 0);
 
 export const EARNING_FIELDS: { key: keyof SalarySheetRow; label: string }[] = [
   { key: "basic_pay", label: "Basic Pay" },
@@ -93,7 +109,7 @@ export const EDITABLE_KEYS = [
 ] as (keyof SalarySheetRow)[];
 
 export function computeTotals(row: Partial<SalarySheetRow>) {
-  const gross = EARNING_FIELDS.reduce((a, f) => a + Number(row[f.key] || 0), 0);
+  const gross = EARNING_FIELDS.reduce((a, f) => a + Number(row[f.key] || 0), 0) + customTotal(row);
   const deductions = DEDUCTION_FIELDS.reduce((a, f) => a + Number(row[f.key] || 0), 0);
   return { gross_pay: gross, total_deductions: deductions, net_pay: gross - deductions };
 }
