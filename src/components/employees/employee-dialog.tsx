@@ -30,7 +30,6 @@ export function EmployeeDialog({
     designation: "",
     bps: "" as string | number,
     joining_date: "",
-    basic_salary: "" as string | number,
     status: "active",
     bank_id: "" as string,
     bank_account_no: "",
@@ -53,7 +52,6 @@ export function EmployeeDialog({
           designation: employee.designation ?? "",
           bps: employee.bps ?? "",
           joining_date: employee.joining_date ?? "",
-          basic_salary: employee.basic_salary,
           status: employee.status,
           bank_id: employee.bank_id ?? "",
           bank_account_no: employee.bank_account_no ?? "",
@@ -83,7 +81,6 @@ export function EmployeeDialog({
         designation: form.designation || null,
         bps: form.bps === "" ? null : Number(form.bps),
         joining_date: form.joining_date || null,
-        basic_salary: form.basic_salary === "" ? 0 : Number(form.basic_salary),
         status: form.status,
         bank_id: form.bank_id || null,
         bank_account_no: form.bank_account_no || null,
@@ -111,7 +108,6 @@ export function EmployeeDialog({
           <div><Label>Designation</Label><Input value={form.designation} onChange={(e) => set("designation", e.target.value)} /></div>
           <div><Label>BPS</Label><Input type="number" value={form.bps} onChange={(e) => set("bps", e.target.value)} /></div>
           <div><Label>Joining Date</Label><Input type="date" value={form.joining_date} onChange={(e) => set("joining_date", e.target.value)} /></div>
-          <div><Label>Basic Salary</Label><Input type="number" step="0.01" value={form.basic_salary} onChange={(e) => set("basic_salary", e.target.value)} /></div>
           <div>
             <Label>Status</Label>
             <Select value={form.status} onValueChange={(v) => set("status", v)}>

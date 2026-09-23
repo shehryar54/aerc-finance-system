@@ -142,47 +142,33 @@ function EmployeesPage() {
 
       <Card className="glass-card">
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Employee ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>Designation</TableHead>
-                  <TableHead>BPS</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead className="text-right">Basic Salary</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {empQ.isLoading ? (
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <TableRow key={i}>{Array.from({ length: 9 }).map((__, j) => <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>)}</TableRow>
-                  ))
-                ) : rows.length === 0 ? (
-                  <TableRow><TableCell colSpan={9} className="h-32 text-center text-muted-foreground">No employees found. Click "Add Employee" to create one.</TableCell></TableRow>
-                ) : rows.map((e) => (
-                  <TableRow key={e.id}>
-                    <TableCell className="font-mono text-xs">{e.employee_code}</TableCell>
-                    <TableCell className="font-medium">{e.full_name}</TableCell>
-                    <TableCell>{e.department ?? "—"}</TableCell>
-                    <TableCell>{e.designation ?? "—"}</TableCell>
-                    <TableCell>{e.bps ? `BPS-${e.bps}` : "—"}</TableCell>
-                    <TableCell><Masked value={e.phone} /></TableCell>
-                    <TableCell className="text-right">{<Money value={e.basic_salary} />}</TableCell>
-                    <TableCell><Badge variant={e.status === "active" ? "secondary" : "outline"} className="capitalize">{e.status.replace("_", " ")}</Badge></TableCell>
-                    <TableCell className="text-right">
-                      <Button size="icon" variant="ghost" title="Salary History" onClick={() => setHistoryFor(e)}><History className="h-3.5 w-3.5" /></Button>
-                      <Button size="icon" variant="ghost" title="Edit" onClick={() => { setEditing(e); setDialogOpen(true); }}><Pencil className="h-3.5 w-3.5" /></Button>
-                      <Button size="icon" variant="ghost" title="Delete" onClick={() => setToDelete(e)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="divide-y">
+            {empQ.isLoading ? (
+              Array.from({ length: 6 }).map((_, i) => <div key={i} className="p-4"><Skeleton className="h-16 w-full" /></div>)
+            ) : rows.length === 0 ? (
+              <div className="h-32 flex items-center justify-center text-muted-foreground text-sm">No employees found. Click "Add Employee" to create one.</div>
+            ) : rows.map((e) => (
+              <div key={e.id} className="p-4 flex flex-col sm:flex-row sm:items-start gap-3 hover:bg-muted/30">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold">{e.full_name}</span>
+                    <Badge variant={e.status === "active" ? "secondary" : "outline"} className="capitalize">{e.status.replace("_", " ")}</Badge>
+                  </div>
+                  <dl className="mt-2 grid grid-cols-[120px_1fr] gap-x-3 gap-y-1 text-sm">
+                    <dt className="text-muted-foreground">Employee ID</dt><dd className="font-mono text-xs">{e.employee_code}</dd>
+                    <dt className="text-muted-foreground">Department</dt><dd>{e.department ?? "—"}</dd>
+                    <dt className="text-muted-foreground">Designation</dt><dd>{e.designation ?? "—"}</dd>
+                    <dt className="text-muted-foreground">BPS</dt><dd>{e.bps ? `BPS-${e.bps}` : "—"}</dd>
+                    <dt className="text-muted-foreground">Phone</dt><dd><Masked value={e.phone} /></dd>
+                  </dl>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <Button size="icon" variant="ghost" title="Salary History" onClick={() => setHistoryFor(e)}><History className="h-3.5 w-3.5" /></Button>
+                  <Button size="icon" variant="ghost" title="Edit" onClick={() => { setEditing(e); setDialogOpen(true); }}><Pencil className="h-3.5 w-3.5" /></Button>
+                  <Button size="icon" variant="ghost" title="Delete" onClick={() => setToDelete(e)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                </div>
+              </div>
+            ))}
           </div>
           <div className="flex items-center justify-between px-4 py-3 border-t text-xs text-muted-foreground">
             <span>{total} employee{total === 1 ? "" : "s"}</span>
