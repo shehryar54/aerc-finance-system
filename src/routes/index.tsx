@@ -46,8 +46,12 @@ function DashboardPage() {
 
   const money = useMoney();
   const [greet, setGreet] = useState("Welcome");
-  useEffect(() => setGreet(greeting()), []);
-  const now = new Date();
+  const [dateLine, setDateLine] = useState("");
+  useEffect(() => {
+    setGreet(greeting());
+    const now = new Date();
+    setDateLine(`${formatDate(now)} • ${now.toLocaleDateString("en-US", { month: "long" })} • FY ${financialYear()}`);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -56,9 +60,7 @@ function DashboardPage() {
         <div>
           <div className="text-sm text-muted-foreground">{greet},</div>
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Welcome back to Finance Hub</h1>
-          <div className="text-xs text-muted-foreground mt-1">
-            {formatDate(now)} • {now.toLocaleDateString("en-US", { month: "long" })} • FY {financialYear()}
-          </div>
+          <div className="text-xs text-muted-foreground mt-1 min-h-4">{dateLine}</div>
         </div>
         <div className="flex items-center gap-2">
           <SensitiveToggle />

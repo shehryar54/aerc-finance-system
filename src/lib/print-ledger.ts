@@ -1,7 +1,7 @@
 import { openPrintWindow, aercHeader, escapeHtml, splitRsPs } from "@/lib/print-templates";
 import type { LedgerEntry } from "@/lib/ledger";
 
-type Head = { id: string; name: string; code?: string | null; type?: string };
+type Head = { id: string; name: string; code?: string | null; hec_code?: string | null; type?: string };
 
 /** Plain text header used by the ruled ledger sheet (no logos — matches the printed book). */
 function ledgerHeader(): string {
@@ -50,6 +50,7 @@ export function printLedgerSheet(opts: {
 
     const debit = splitRsPs(d);
     const credit = splitRsPs(c);
+    const rb = splitRsPs(Math.abs(bal));
     bodyRows.push(`<tr>
       <td class="m">${showMonth ? month : ""}</td>
       <td class="d">${day}</td>
@@ -60,7 +61,9 @@ export function printLedgerSheet(opts: {
       <td class="right">${d ? debit.ps : ""}</td>
       <td class="right">${c ? credit.rs : ""}</td>
       <td class="right">${c ? credit.ps : ""}</td>
-      <td></td><td></td><td></td>
+      <td class="center">${bal === 0 ? "" : bal > 0 ? "Dr" : "Cr"}</td>
+      <td class="right">${rb.rs}</td>
+      <td class="right">${rb.ps}</td>
     </tr>`);
   }
 
@@ -78,7 +81,7 @@ export function printLedgerSheet(opts: {
     ${ledgerHeader()}
     <div class="acct-line">
       <span class="lbl">NAME OF ACCOUNT</span>
-      <span class="acct-name">${escapeHtml(account.name.toUpperCase())}</span>
+      <span class="acct-name">${escapeHtml(account.name.toUpperCase())}${(account.hec_code || account.code) ? ` &nbsp;<small>(A/c Code: ${escapeHtml(account.hec_code || account.code || "")})</small>` : ""}</span>
       <span class="sheet-lbl">SHEET NO.</span>
       <span class="sheet-box">${escapeHtml(opts.sheetNo ?? "001")}</span>
     </div>

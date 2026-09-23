@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Wallet, Play, Search, Download } from "lucide-react";
+import { Wallet, Play, Search, Download, Printer, Layers } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,12 +11,15 @@ import { useEmployees } from "@/lib/queries";
 import {
   MONTHS, monthLabel,
   useSalarySheet, useGenerateSalarySheet,
-  EARNING_FIELDS, DEDUCTION_FIELDS,
+  EARNING_FIELDS, DEDUCTION_FIELDS, customAllowanceKeys, customValue,
   type SalarySheetRow,
 } from "@/lib/salary-sheet";
 import { useMoney, SensitiveToggle } from "@/lib/privacy";
 import { SalarySheetTable } from "@/components/salary/salary-sheet-table";
 import { SalarySheetSlipDialog } from "@/components/salary/salary-sheet-slip";
+import { ManageAdhocDialog } from "@/components/salary/manage-adhoc-dialog";
+import { buildSalarySlipHtml, printSalarySlips } from "@/lib/print-salary-slip";
+import { useOrgSettings } from "@/lib/queries";
 
 export const Route = createFileRoute("/payroll")({
   head: () => ({
@@ -43,6 +46,8 @@ function PayrollPage() {
   const [query, setQuery] = useState("");
   const [slipRow, setSlipRow] = useState<SalarySheetRow | undefined>();
   const money = useMoney();
+  const [adhocOpen, setAdhocOpen] = useState(false);
+  const orgQ = useOrgSettings();
 
   const empQ = useEmployees();
   const sheetQ = useSalarySheet(year, month);
@@ -82,12 +87,23 @@ function PayrollPage() {
     } catch (e) { toast.error((e as Error).message); }
   };
 
+  const customKeys = useMemo(() => customAllowanceKeys(sheetQ.data ?? []), [sheetQ.data]);
+
+  const printAll = () => {
+    const slips = filtered
+      .map((r) => { const e = empsById.get(r.employee_id); return e ? buildSalarySlipHtml(r, e, orgQ.data?.organisation_name) : ""; })
+      .filter(Boolean);
+    if (slips.length === 0) { toast.error("No salary slips to print"); return; }
+    printSalarySlips(`Salary Slips — ${monthLabel(year, month)}`, slips);
+  };
+
   const exportCsv = () => {
     const list = filtered;
     if (list.length === 0) { toast.error("Nothing to export"); return; }
     const header = [
       "Emp Code", "Name", "BPS",
       ...EARNING_FIELDS.map((f) => f.label),
+      ...customKeys.map((k) => `"${k.replace(/"/g, '""')}"`),
       "Gross Pay",
       ...DEDUCTION_FIELDS.map((f) => f.label),
       "Total Deductions", "Net Pay", "Status",
@@ -100,6 +116,7 @@ function PayrollPage() {
           `"${(e?.full_name ?? "").replace(/"/g, '""')}"`,
           e?.bps ?? "",
           ...EARNING_FIELDS.map((f) => Number(r[f.key] || 0)),
+          ...customKeys.map((k) => customValue(r, k)),
           Number(r.gross_pay || 0),
           ...DEDUCTION_FIELDS.map((f) => Number(r[f.key] || 0)),
           Number(r.total_deductions || 0),
@@ -129,7 +146,7 @@ function PayrollPage() {
             Live spreadsheet — edit any cell and gross, deductions, and net pay recalculate instantly.
           </p>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
           <SensitiveToggle />
           <Select value={String(month)} onValueChange={(v) => setMonth(Number(v))}>
             <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
@@ -139,6 +156,8 @@ function PayrollPage() {
             <SelectTrigger className="w-[110px]"><SelectValue /></SelectTrigger>
             <SelectContent>{UNIQUE_YEARS.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
           </Select>
+          <Button variant="outline" onClick={() => setAdhocOpen(true)}><Layers className="h-4 w-4" /> Manage Ad-hoc</Button>
+          <Button variant="outline" onClick={printAll} disabled={filtered.length === 0}><Printer className="h-4 w-4" /> Print All</Button>
           <Button variant="outline" onClick={exportCsv}><Download className="h-4 w-4" /> Export CSV</Button>
           <Button onClick={doGenerate} disabled={gen.isPending}>
             <Play className="h-4 w-4" /> Generate
@@ -187,6 +206,8 @@ function PayrollPage() {
           )}
         </CardContent>
       </Card>
+
+      <ManageAdhocDialog open={adhocOpen} onOpenChange={setAdhocOpen} year={year} month={month} customKeys={customKeys} />
 
       <SalarySheetSlipDialog
         open={!!slipRow}

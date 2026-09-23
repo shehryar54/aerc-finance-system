@@ -167,7 +167,7 @@ function HeadSelect({ value, onChange, options, placeholder }: { value: string; 
       <SelectContent>
         {options.map((h) => (
           <SelectItem key={h.id} value={h.id}>
-            <span className="text-xs text-muted-foreground mr-2">{h.code}</span>{h.name}
+            <span className="text-xs text-muted-foreground mr-2">{(h as { hec_code?: string | null }).hec_code || h.code}</span>{h.name}
           </SelectItem>
         ))}
       </SelectContent>

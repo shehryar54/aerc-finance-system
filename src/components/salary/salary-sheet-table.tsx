@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, Printer, Trash2, CheckCircle2 } from "lucide-react";
 import type { Employee } from "@/lib/queries";
 import {
-  EARNING_FIELDS, DEDUCTION_FIELDS, EDITABLE_KEYS, computeTotals,
+  EARNING_FIELDS, DEDUCTION_FIELDS, EDITABLE_KEYS, computeTotals, customAllowanceKeys, customValue,
   useUpdateSalarySheetCell, useDeleteSalarySheetRow,
   type SalarySheetRow,
 } from "@/lib/salary-sheet";
@@ -45,6 +45,7 @@ const NumCell = memo(function NumCell({
 });
 
 export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
+  const customKeys = customAllowanceKeys(rows);
   const update = useUpdateSalarySheetCell();
   const del = useDeleteSalarySheetRow();
   // Local optimistic overlay so totals & net_pay refresh instantly while the mutation flies.
@@ -80,6 +81,18 @@ export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
     });
   };
 
+  const commitCustom = (row: SalarySheetRow, key: string, val: number) => {
+    const next = { ...(row.custom_allowances ?? {}), [key]: val };
+    setOverlay((o) => ({ ...o, [row.id]: { ...(o[row.id] ?? {}), custom_allowances: next } }));
+    update.mutate(
+      { id: row.id, patch: { custom_allowances: next } as Partial<SalarySheetRow> },
+      {
+        onError: (e) => { toast.error((e as Error).message); setOverlay((o) => { const c = { ...o }; delete c[row.id]; return c; }); },
+        onSuccess: () => setOverlay((o) => { const c = { ...o }; delete c[row.id]; return c; }),
+      },
+    );
+  };
+
   const view = rows.map((r) => ({ ...r, ...(overlay[r.id] ?? {}) })) as SalarySheetRow[];
 
   return (
@@ -91,6 +104,9 @@ export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
             <th className="text-left px-2 py-2 border-b sticky left-[110px] bg-muted/80 z-20 min-w-[180px]">Name</th>
             {EARNING_FIELDS.map((f) => (
               <th key={f.key} className="px-2 py-2 border-b text-right text-[10px] uppercase tracking-wide whitespace-nowrap">{f.label}</th>
+            ))}
+            {customKeys.map((k) => (
+              <th key={"c-" + k} className="px-2 py-2 border-b text-right text-[10px] uppercase tracking-wide whitespace-nowrap bg-accent/30">{k}</th>
             ))}
             <th className="px-2 py-2 border-b text-right bg-emerald-500/10 whitespace-nowrap">Gross</th>
             {DEDUCTION_FIELDS.map((f) => (
@@ -120,6 +136,11 @@ export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
                     <NumCell value={Number(r[k] || 0)} onCommit={(n) => commit(r, k, n)} />
                   </td>
                 )).slice(0, EARNING_FIELDS.length)}
+                {customKeys.map((k) => (
+                  <td key={"c-" + k} className="px-1 py-0.5 border-b text-right bg-accent/10">
+                    <NumCell value={customValue(r, k)} onCommit={(n) => commitCustom(r, k, n)} />
+                  </td>
+                ))}
                 <td className="px-2 py-1 border-b text-right font-semibold bg-emerald-500/5 tabular-nums">{<Money value={totals.gross_pay} />}</td>
                 {EDITABLE_KEYS.slice(EARNING_FIELDS.length).map((k) => (
                   <td key={k} className="px-1 py-0.5 border-b text-right">
@@ -160,7 +181,7 @@ export function SalarySheetTable({ rows, employeesById, onOpenSlip }: Props) {
               net: a.net + t.net_pay,
             };
           }, { gross: 0, ded: 0, net: 0 });
-          const cols = 2 + EARNING_FIELDS.length;
+          const cols = 2 + EARNING_FIELDS.length + customKeys.length;
           return (
             <tfoot className="sticky bottom-0 bg-muted/90 backdrop-blur font-semibold">
               <tr>
