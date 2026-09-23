@@ -28,7 +28,11 @@ function voucherBodyHtml(
   const amt = splitRsPs(voucher.amount);
   // Bank code: if credit head is a bank, use its code as A/c No fallback
   const bankName = creditHead?.type === "bank" ? creditHead.name : (vendor?.bank_name ?? "");
-  const acNo = vendor?.bank_account_no ?? creditHead?.code ?? "";
+  // Bank account number only — accounting codes are never printed as A/c No.
+  const acNo = vendor?.bank_account_no ?? "";
+  const needsVc = Number(voucher.amount) > 100000;
+  const headCode = (h: AccountHead | null | undefined) =>
+    (h as (AccountHead & { hec_code?: string | null }) | null | undefined)?.hec_code || h?.code || "";
   const payTo = vendor?.name ?? "";
   const description = voucher.description ?? "";
   const emptyRows = Math.max(0, 12 - 2); // padding rows in ledger table
@@ -93,13 +97,13 @@ function voucherBodyHtml(
       <tbody>
         <tr>
           <td><b>Bank/Cash</b></td>
-          <td class="mono center">${escapeHtml(creditHead?.code ?? "")}</td>
+          <td class="mono center">${escapeHtml(headCode(creditHead))}</td>
           <td></td><td></td>
           <td class="right mono"><i>${amt.rs}</i></td><td class="right mono"><i>${amt.ps}</i></td>
         </tr>
         <tr>
           <td>${escapeHtml(debitHead?.name ?? "")}${description ? ` — ${escapeHtml(description)}` : ""}</td>
-          <td class="mono center">${escapeHtml(debitHead?.code ?? "")}</td>
+          <td class="mono center">${escapeHtml(headCode(debitHead))}</td>
           <td class="right mono">${amt.rs}</td><td class="right mono">${amt.ps}</td>
           <td></td><td></td>
         </tr>
@@ -123,11 +127,11 @@ function voucherBodyHtml(
       </div>
     </div>
 
-    <div class="approvals-grid">
+    <div class="approvals-grid" style="grid-template-columns:repeat(${needsVc ? 4 : 3},1fr)">
       <div class="sig-cell">Director</div>
       <div class="sig-cell">Auditor</div>
       <div class="sig-cell">Director Finance</div>
-      <div class="sig-cell">Vice Chancellor</div>
+      ${needsVc ? `<div class="sig-cell">Vice Chancellor</div>` : ""}
     </div>
 
     <div class="print-foot">
