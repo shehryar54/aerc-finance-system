@@ -125,7 +125,7 @@ function ReportsPage() {
 
       <Card className="glass-card">
         <CardContent className="p-4 space-y-3">
-          <div className="flex items-center justify-between"><h3 className="font-semibold">Employee Directory ({employees.length})</h3><Button variant="outline" size="sm" onClick={() => downloadCsv("employees", employees.map((e) => ({ code: e.employee_code, name: e.full_name, bps: e.bps, designation: e.designation, department: e.department, phone: e.phone, cnic: e.cnic, joining_date: e.joining_date, basic_salary: e.basic_salary, status: e.status })))}><Download className="h-4 w-4" /> Export All</Button></div>
+          <div className="flex items-center justify-between"><h3 className="font-semibold">Employee Directory ({employees.length})</h3><Button variant="outline" size="sm" onClick={() => downloadCsv("employees", employees.map((e) => ({ code: e.employee_code, name: e.full_name, bps: e.bps, designation: e.designation, department: e.department, phone: e.phone, cnic: e.cnic, joining_date: e.joining_date, status: e.status })))}><Download className="h-4 w-4" /> Export All</Button></div>
         </CardContent>
       </Card>
     </div>
