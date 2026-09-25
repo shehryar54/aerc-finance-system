@@ -4,6 +4,7 @@ import {
   Users, Wallet, ArrowDownRight, ArrowUpRight, Landmark, HandCoins, PiggyBank, Receipt,
 } from "lucide-react";
 import { useBanks, useTransactions, useEmployees, useActivity } from "@/lib/queries";
+import { useSalarySheet } from "@/lib/salary-sheet";
 import { greeting, financialYear, formatDate } from "@/lib/format";
 import { useMoney, SensitiveToggle } from "@/lib/privacy";
 import { BankCard } from "@/components/dashboard/bank-card";
@@ -32,6 +33,7 @@ function DashboardPage() {
   const txQ = useTransactions();
   const empQ = useEmployees();
   const actQ = useActivity(20);
+  const sheetQ = useSalarySheet(2026, 6);
 
   const banks = banksQ.data ?? [];
   const transactions = txQ.data ?? [];
@@ -82,7 +84,7 @@ function DashboardPage() {
       {/* Stats */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Total Employees" value={String(employees.length)} icon={Users} />
-        <StatCard label="Monthly Payroll" value={money(employees.reduce((s, e) => s + Number(e.basic_salary ?? 0), 0))} icon={Wallet} tone="warning" />
+        <StatCard label="Monthly Payroll" value={money((sheetQ.data ?? []).reduce((s, r) => s + Number(r.net_pay || 0), 0))} icon={Wallet} tone="warning" />
         <StatCard label="Total Credits" value={money(totals.credit)} icon={ArrowDownRight} tone="success" />
         <StatCard label="Total Debits" value={money(totals.debit)} icon={ArrowUpRight} tone="destructive" />
         <StatCard label="Net Cash" value={money(totals.net)} icon={Landmark} />
